@@ -1,0 +1,42 @@
+<?php
+
+namespace App\DataFixtures;
+
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Entity\Plan;
+use Doctrine\Persistence\ObjectManager;
+
+class AppFixtures extends Fixture
+{
+    public function load(ObjectManager $manager): void
+    {
+        $plan = new Plan();
+        $plan->setName('FREE');
+        $plan->setDescription('Abonnement gratuit - 2 pdf par jour');
+        $plan->setPrice(0);
+        $plan->setLimitGeneration(2);
+        $plan->setActive(true);
+        $plan->setCreatedAt(new \DateTimeImmutable());
+        $manager->persist($plan);
+
+        $plan = new Plan();
+        $plan->setName('BASIC');
+        $plan->setDescription('Abonnement basic - 20 pdf par jour');
+        $plan->setPrice(9.9);
+        $plan->setLimitGeneration(20);
+        $plan->setActive(true);
+        $plan->setCreatedAt(new \DateTimeImmutable());
+        $manager->persist($plan);
+
+        $plan = new Plan();
+        $plan->setName('PREMIUM');
+        $plan->setDescription('Abonnement PREMIUM - 200 pdf par jour');
+        $plan->setPrice(45);
+        $plan->setLimitGeneration(200);
+        $plan->setActive(true);
+        $plan->setCreatedAt(new \DateTimeImmutable());
+        $manager->persist($plan);
+
+        $manager->flush();
+    }
+}
