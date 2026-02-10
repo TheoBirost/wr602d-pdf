@@ -21,7 +21,18 @@
 .idea/
 .vscode/
 .idea/php.xml
-
+.idea
 .idea/wr602d.iml
 
 .env
+
+# Ignorer les contrôleurs et les templates de sécurité
+src/Controller/RegistrationController.php
+src/Controller/ResetPasswordController.php
+src/Controller/SecurityController.php
+src/Controller/SubscriptionController.php
+src/Security/
+templates/registration/
+templates/reset_password/
+templates/security/
+templates/subscription/

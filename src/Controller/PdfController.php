@@ -6,7 +6,6 @@ use App\Service\GotenbergService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class PdfController extends AbstractController
 {
@@ -18,7 +17,6 @@ class PdfController extends AbstractController
     }
 
     #[Route('/pdf/generate', name: 'app_pdf_generate')]
-    #[IsGranted('ROLE_USER')]
     public function generatePdf(): Response
     {
         $html = '<h1>Hello, PDF!</h1>';
