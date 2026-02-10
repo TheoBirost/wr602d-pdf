@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Home{% endblock %}
+
+{% block body %}
+    <h1>Welcome to the PDF Generator</h1>
+    <p>
+        {% if app.user %}
+            You are logged in as {{ app.user.userIdentifier }}.
+            <br>
+            <a href="{{ path('pdf_generate') }}">Start generating a PDF now!</a>
+        {% else %}
+            Please <a href="{{ path('app_login') }}">log in</a> to continue.
+        {% endif %}
+    </p>
+{% endblock %}
