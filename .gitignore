@@ -20,3 +20,8 @@
 ###< symfony/asset-mapper ###
 .idea/
 .vscode/
+.idea/php.xml
+
+.idea/wr602d.iml
+
+.env
