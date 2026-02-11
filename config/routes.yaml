@@ -3,3 +3,39 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+app_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout
+
+app_register:
+    path: /register
+    controller: App\Controller\RegistrationController::register
+
+app_forgot_password_request:
+    path: /reset-password
+    controller: App\Controller\ResetPasswordController::request
+
+homepage:
+    path: /
+    controller: App\Controller\HomeController::index
+
+subscription_change:
+    path: /subscription/change
+    controller: App\Controller\SubscriptionController::changeSubscription
+
+pdf_generation:
+    path: /pdf/generate
+    controller: App\Controller\GeneratePdfController::generatePdf
+
+history:
+    path: /history
+    controller: App\Controller\HistoryController::index
+
+app_profile:
+    path: /profile
+    controller: App\Controller\ProfileController::index
