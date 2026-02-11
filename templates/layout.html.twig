@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+    .main-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid var(--text-color);
+    }
+    .main-nav .logo a {
+        font-weight: 700; /* Bold */
+        font-size: 1.5rem;
+    }
+    .main-nav .nav-links a {
+        margin: 0 1rem;
+        font-weight: 500; /* Medium */
+    }
+    .main-nav .login-btn {
+        padding: 0.5rem 1rem;
+        border: 1px solid var(--text-color);
+        border-radius: 4px;
+        font-weight: 500; /* Medium */
+    }
+    .main-nav .login-btn:hover {
+        background-color: var(--text-color);
+        color: var(--primary-color);
+    }
+    .content-container {
+        padding: 2rem;
+        max-width: 960px;
+        margin: 0 auto;
+    }
+</style>
+
+<nav class="main-nav">
+    <div class="logo">
+        <a href="{{ path('homepage') }}">YourLogo</a>
+    </div>
+    <div class="nav-links">
+        <a href="{{ path('homepage') }}">Accueil</a>
+        <a href="{{ path('history') }}">Historique</a>
+        <a href="{{ path('subscription_change') }}">Plan</a>
+    </div>
+    <div>
+        {% if app.user %}
+            <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="login-btn">Connexion</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="content-container">
+    {% block content %}{% endblock %}
+</div>
+{% endblock %}

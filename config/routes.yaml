@@ -29,8 +29,9 @@ subscription_change:
     controller: App\Controller\SubscriptionController::changeSubscription
 
 pdf_generation:
-    path: /pdf/generate
+    path: /pdf/generate/{type}
     controller: App\Controller\GeneratePdfController::generatePdf
+    defaults: { type: null } # Make type optional
 
 history:
     path: /history
