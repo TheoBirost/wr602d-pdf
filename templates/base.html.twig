@@ -1,17 +1,102 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PDF-GEN{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    <style>
+        :root {
+            --bg-color: #E8D4B8;
+            --dark-color: #2C2C2C;
+            --text-color: #000000;
+        }
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background-color: var(--bg-color);
+            border-bottom: 1px solid var(--dark-color);
+            flex-wrap: wrap; /* For responsiveness */
+        }
+
+        .main-nav .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .main-nav .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .main-nav .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .main-nav .login-btn {
+            padding: 0.5rem 1.5rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .content-container {
+            padding: 3rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .main-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .content-container {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="logo">PDF-GEN</div>
+        <div class="nav-links">
+            <a href="{{ path('homepage') }}">ACCUEIL</a>
+            <a href="{{ path('history') }}">HISTORIQUE</a>
+            <a href="{{ path('subscription_change') }}">PLAN</a>
+        </div>
+        <div>
+            {% if app.user %}
+                <a href="{{ path('app_logout') }}" class="login-btn">Logout</a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="login-btn">Connexion</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="content-container">
+        {% block content %}{% endblock %}
+    </div>
+
+    {% block javascripts %}{% endblock %}
+</body>
 </html>

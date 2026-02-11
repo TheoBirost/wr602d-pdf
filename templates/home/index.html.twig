@@ -1,21 +1,290 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome!{% endblock %}
+{% block title %}PDF-GEN - Accueil{% endblock %}
 
-{% block body %}
-<nav>
-    <ul>
-        <li><a href="{{ path('homepage') }}">Home</a></li>
-        <li><a href="{{ path('app_login') }}">Login</a></li>
-        <li><a href="{{ path('app_logout') }}">Logout</a></li>
-        <li><a href="{{ path('app_register') }}">Register</a></li>
-        <li><a href="{{ path('app_forgot_password_request') }}">Reset Password</a></li>
-        <li><a href="{{ path('subscription_change') }}">Change Subscription</a></li>
-        <li><a href="{{ path('pdf_generation') }}">Generate PDF</a></li>
-        <li><a href="{{ path('history') }}">History</a></li>
-        <li><a href="{{ path('app_profile') }}">Profile</a></li>
-    </ul>
-</nav>
+{% block stylesheets %}
+    <style>
+        .progress-section {
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+            border-bottom: 1px solid var(--dark-color);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-<h1>Welcome to the homepage!</h1>
+        .progress-bar-container {
+            flex: 1;
+            margin: 0 2rem;
+            min-width: 200px;
+        }
+
+        .progress-text {
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #FFFFFF;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--dark-color);
+            width: 50%;
+            transition: width 0.3s ease;
+        }
+
+        .plan-info {
+            text-align: right;
+        }
+
+        .content-container {
+            text-align: center;
+        }
+
+        .main-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .pdf-options {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .pdf-option {
+            width: 180px;
+            height: 120px;
+            background-color: #C8CACE;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .pdf-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        #pdf-form-container {
+            margin: 3rem auto;
+            max-width: 600px;
+        }
+
+        .upload-zone {
+            width: 100%;
+            height: 200px;
+            background-color: #C8CACE;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 0.7rem 2rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        .back-btn {
+            background-color: transparent;
+            border: 1px solid var(--dark-color);
+            color: var(--dark-color);
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 4rem;
+            padding-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        .feature-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .progress-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .progress-bar-container {
+                width: 100%;
+                margin: 0;
+            }
+            .plan-info {
+                text-align: left;
+                width: 100%;
+            }
+            .main-title {
+                font-size: 2rem;
+            }
+            .pdf-option {
+                width: 140px;
+                height: 100px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="progress-section">
+        <div class="progress-text">generation of available PDFs</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+        <div>1/2 restants</div>
+        <div class="plan-info">
+            <div>plan actuel : STARTER</div>
+            <div style="font-size: 0.8rem;">Renouvellement : 1er Mars 2026</div>
+        </div>
+    </div>
+
+    <h1 class="main-title">CONVERTISSEUR PDF</h1>
+    <p class="subtitle">Convertissez et modifiez instantanément tout type de document !</p>
+
+    <div class="pdf-options" id="options-container">
+        <div class="pdf-option" data-type="html">HTML</div>
+        <div class="pdf-option" data-type="url">URL</div>
+        <div class="pdf-option" data-type="word">WORD</div>
+        <div class="pdf-option" data-type="excel">EXCEL</div>
+        <div class="pdf-option" data-type="image">IMAGE</div>
+    </div>
+
+    <div id="pdf-form-container" class="hidden"></div>
+
+    <div class="features">
+        <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+            <span>CONFIDENTIEL</span>
+        </div>
+        <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>SIMPLE</span>
+        </div>
+        <div class="feature">
+            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>ULTRA-RAPIDE</span>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script>
+        document.querySelectorAll('.pdf-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const type = this.dataset.type;
+
+                // Masquer les options
+                document.getElementById('options-container').classList.add('hidden');
+
+                // Afficher la zone de formulaire
+                const formContainer = document.getElementById('pdf-form-container');
+                formContainer.classList.remove('hidden');
+
+                // Créer le formulaire de téléchargement
+                formContainer.innerHTML = `
+                <div class="upload-zone" onclick="document.getElementById('file-input').click()">
+                    <input type="file" id="file-input" style="display: none;" accept="${getAcceptType(type)}">
+                    <p>Cliquez pour sélectionner un fichier ${type.toUpperCase()}</p>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn back-btn" onclick="goBack()">RETOUR</button>
+                    <button class="action-btn" onclick="downloadPDF()">TELECHARGER</button>
+                    <button class="action-btn" onclick="addToFavorites()">FAVORIS</button>
+                </div>
+            `;
+            });
+        });
+
+        function getAcceptType(type) {
+            const types = {
+                'html': '.html,.htm',
+                'url': '*',
+                'word': '.doc,.docx',
+                'excel': '.xls,.xlsx',
+                'image': 'image/*'
+            };
+            return types[type] || '*';
+        }
+
+        function goBack() {
+            document.getElementById('pdf-form-container').classList.add('hidden');
+            document.getElementById('options-container').classList.remove('hidden');
+        }
+
+        function downloadPDF() {
+            alert('Téléchargement du PDF...');
+        }
+
+        function addToFavorites() {
+            alert('Ajouté aux favoris !');
+        }
+    </script>
 {% endblock %}

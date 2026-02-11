@@ -1,0 +1,15 @@
+{# templates/pdf/_form.html.twig #}
+
+{% if type == 'url' %}
+    <form method="post" action="{{ path('pdf_generation') }}">
+        <label for="url">URL:</label>
+        <input type="text" id="url" name="url" required />
+        <button type="submit">Generate PDF from URL</button>
+    </form>
+{% elseif type == 'html' %}
+    <form method="post" action="{{ path('pdf_generation') }}" enctype="multipart/form-data">
+        <label for="html_file">HTML File:</label>
+        <input type="file" id="html_file" name="html_file" required />
+        <button type="submit">Generate PDF from HTML</button>
+    </form>
+{% endif %}

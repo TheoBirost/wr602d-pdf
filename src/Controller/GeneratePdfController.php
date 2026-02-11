@@ -6,42 +6,53 @@ use App\Service\YourGotenbergService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
 class GeneratePdfController extends AbstractController
 {
-private $pdfService;
+    private $pdfService;
 
-public function __construct(YourGotenbergService $pdfService)
-{
-$this->pdfService = $pdfService;
-}
+    public function __construct(YourGotenbergService $pdfService)
+    {
+        $this->pdfService = $pdfService;
+    }
 
-public function generatePdf(Request $request): Response
-{
-// Créer le formulaire
-$form = $this->createFormBuilder()
-->add('url', null, ['required' => true])
-->getForm();
+    #[Route('/pdf/generate/{type}', name: 'pdf_generation', defaults: ['type' => null])]
+    public function generatePdf(Request $request, ?string $type): Response
+    {
+        $formBuilder = $this->createFormBuilder();
 
-// Gérer la soumission du formulaire
-$form->handleRequest($request);
+        if ($type === 'url') {
+            $formBuilder->add('url', UrlType::class, ['required' => true]);
+        } elseif ($type === 'html') {
+            $formBuilder->add('html_file', FileType::class, ['required' => true]);
+        }
 
-// Si le formulaire est soumis et valide
-if ($form->isSubmitted() && $form->isValid()) {
-// Récupérer l'URL saisie à partir des données du formulaire
-$url = $form->getData()['url'];
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
 
-// Faites appel à votre service pour générer le PDF
-$pdf = $this->pdfService->generatePdfFromUrl($url);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
 
-// Rediriger ou afficher une réponse appropriée
-// Par exemple, rediriger vers une page de confirmation
-return $this->redirectToRoute('pdf_generated_success');
-}
+            if (isset($data['url'])) {
+                // $pdf = $this->pdfService->generatePdfFromUrl($data['url']);
+                // Handle the PDF response, e.g., force download
+            } elseif (isset($data['html_file'])) {
+                // $pdf = $this->pdfService->generatePdfFromFile($data['html_file']);
+                // Handle the PDF response
+            }
 
-// Afficher le formulaire
-return $this->render('pdf/generate.html.twig', [
-'form' => $form->createView(),
-]);
-}
+            // For now, just redirect to home
+            return $this->redirectToRoute('homepage');
+        }
+
+        $template = $request->isXmlHttpRequest() ? 'pdf/_form.html.twig' : 'pdf/generate.html.twig';
+
+        return $this->render($template, [
+            'form' => $form->createView(),
+            'type' => $type,
+        ]);
+    }
 }
