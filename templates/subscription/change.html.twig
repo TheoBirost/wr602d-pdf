@@ -1,9 +1,373 @@
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Change subscription{% endblock %}
+{% block title %}Nos Plans - PDF-GEN{% endblock %}
+
+{% block stylesheets %}
+    <style>
+
+
+        .plans-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 1rem 3rem 1rem;
+            text-align: center;
+        }
+
+        .plans-header {
+            margin-bottom: 3rem;
+        }
+
+        .plans-title {
+            font-size: 3.5rem;
+            font-weight: 900;
+            margin: 0;
+            color: #000000;
+            letter-spacing: 2px;
+        }
+
+        .plans-grid {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: nowrap;
+            align-items: stretch;
+        }
+
+        .plan-card {
+            background-color: #FFFFFF;
+            border: 3px solid #000000;
+            border-radius: 0;
+            padding: 2rem 1.5rem;
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 8px 8px 0 rgba(0,0,0,0.2);
+        }
+
+        .plan-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            font-size: 0.75rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            border: 2px solid #000000;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        .plan-badge.starter {
+            background-color: #F4E04D;
+            color: #000000;
+        }
+
+        .plan-badge.pro {
+            background-color: #FF6B6B;
+            color: #000000;
+        }
+
+        .plan-badge.elite {
+            background-color: #4ECDC4;
+            color: #000000;
+        }
+
+        .plan-badge.legend {
+            background-color: #C792EA;
+            color: #000000;
+        }
+
+        .plan-tagline {
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #000000;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            min-height: 2.5em;
+        }
+
+        .plan-price-box {
+            background-color: #2D2D2D;
+            color: #FFFFFF;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #FFFFFF;
+            line-height: 1;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: #FFFFFF;
+        }
+
+        .plan-features {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 2rem 0;
+            text-align: left;
+            flex-grow: 1;
+        }
+
+        .plan-feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #000000;
+            font-weight: 500;
+        }
+
+        .feature-icon {
+            margin-right: 0.75rem;
+            font-weight: 900;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+
+        .feature-icon.check {
+            color: #000000;
+        }
+
+        .feature-icon.cross {
+            color: #CCCCCC;
+        }
+
+        .plan-feature.disabled {
+            color: #999999;
+        }
+
+        .btn-plan {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 0;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border: 3px solid #000000;
+            cursor: pointer;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .btn-plan-outline {
+            background-color: #FFFFFF;
+            color: #000000;
+        }
+
+        .btn-plan-outline:hover {
+            background-color: #000000;
+            color: #FFFFFF;
+        }
+
+        .btn-plan-solid {
+            background-color: #2D2D2D;
+            color: #FFFFFF;
+        }
+
+        .btn-plan-solid:hover {
+            background-color: #000000;
+        }
+
+        @media (max-width: 1024px) {
+            .plans-grid {
+                flex-wrap: wrap;
+            }
+
+            .plan-card {
+                flex: 0 0 calc(50% - 1rem);
+                min-width: 250px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .plans-title {
+                font-size: 2rem;
+            }
+
+            .plan-card {
+                flex: 0 0 100%;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <h1>Change subscription</h1>
+    <div class="plans-container">
+        <div class="plans-header">
+            <h1 class="plans-title">CHOOSE YOUR PLAN</h1>
+        </div>
 
-    {# add your subscription change form here #}
+        <div class="plans-grid">
+            <!-- STARTER Plan -->
+            <div class="plan-card">
+                <div class="plan-badge starter">STARTER</div>
+                <div class="plan-tagline">For curious minds</div>
+
+                <div class="plan-price-box">
+                    <div class="plan-price">$0<span>/month</span></div>
+                </div>
+
+                <ul class="plan-features">
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Création PDF
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        Modèles
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        Suppression du filigrane
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        Édition & organisation
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        Outils avancés (signature)
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        OCR & fonctionnalités pro
+                    </li>
+                </ul>
+
+                <a href="#" class="btn-plan btn-plan-solid">✓ Selected</a>
+            </div>
+
+            <!-- PRO Plan -->
+            <div class="plan-card">
+                <div class="plan-badge pro">PRO</div>
+                <div class="plan-tagline">Most popular choice</div>
+
+                <div class="plan-price-box">
+                    <div class="plan-price">$9<span>/month</span></div>
+                </div>
+
+                <ul class="plan-features">
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Création PDF
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Modèles
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Suppression du filigrane
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        Édition & organisation
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        Outils avancés (signature)
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        OCR & fonctionnalités pro
+                    </li>
+                </ul>
+
+                <a href="#" class="btn-plan btn-plan-outline">Choose plan</a>
+            </div>
+
+            <!-- ELITE Plan -->
+            <div class="plan-card">
+                <div class="plan-badge elite">ELITE</div>
+                <div class="plan-tagline">For power users</div>
+
+                <div class="plan-price-box">
+                    <div class="plan-price">$29<span>/month</span></div>
+                </div>
+
+                <ul class="plan-features">
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Création PDF
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Modèles
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Suppression du filigrane
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Édition & organisation
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Outils avancés (signature)
+                    </li>
+                    <li class="plan-feature disabled">
+                        <span class="feature-icon cross">✗</span>
+                        OCR & fonctionnalités pro
+                    </li>
+                </ul>
+
+                <a href="#" class="btn-plan btn-plan-outline">Choose plan</a>
+            </div>
+
+            <!-- LEGEND Plan -->
+            <div class="plan-card">
+                <div class="plan-badge legend">LEGEND</div>
+                <div class="plan-tagline">Ultimate experience</div>
+
+                <div class="plan-price-box">
+                    <div class="plan-price">$99<span>/month</span></div>
+                </div>
+
+                <ul class="plan-features">
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Création PDF
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Modèles
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Suppression du filigrane
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Édition & organisation
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        Outils avancés (signature)
+                    </li>
+                    <li class="plan-feature">
+                        <span class="feature-icon check">✓</span>
+                        OCR & fonctionnalités pro
+                    </li>
+                </ul>
+
+                <a href="#" class="btn-plan btn-plan-outline">Choose plan</a>
+            </div>
+        </div>
+    </div>
 {% endblock %}

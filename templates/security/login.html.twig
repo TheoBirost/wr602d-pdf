@@ -1,71 +1,132 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in!{% endblock %}
+{% block title %}Connexion{% endblock %}
 
-{% block body %}
-<style>
-    .login-container {
-        display: flex;
-        height: 100vh;
-    }
-    .login-image {
-        flex: 1;
-        background-color: var(--dark-color); /* Black background for image area */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--primary-color); /* Cream text for image area */
-    }
-    .login-form-container {
-        flex: 1;
-        padding: 4rem;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        background-color: var(--bg-color); /* Cream background for form */
-    }
-    .nav-links {
-        margin-bottom: 2rem;
-        text-align: right;
-    }
-    .nav-links a {
-        margin-left: 1rem;
-        font-weight: 500; /* Medium */
-        color: var(--text-color);
-    }
-    .login-form-container h1 {
-        font-weight: 700; /* Bold */
-        color: var(--text-color);
-    }
-    .register-link {
-        margin-top: 1.5rem;
-        text-align: center;
-        font-weight: 400; /* Regular */
-        color: var(--text-color);
-    }
-    .register-link a {
-        font-weight: 600; /* Semi-bold */
-        text-decoration: underline;
-        color: var(--text-color);
-    }
-    .alert-danger {
-        color: red; /* Keep red for error messages */
-        margin-bottom: 1rem;
-    }
-</style>
+{% block stylesheets %}
+    <style>
+        .login-container {
+            display: flex;
+            min-height: calc(100vh - 80px); /* Adjust based on nav height */
+        }
+        .login-image {
+            flex: 1;
+            background-color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+        }
+        .login-form-container {
+            flex: 1;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--bg-color);
+        }
+        .login-form-container h1 {
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-transform: uppercase;
+            margin-top: 1rem;
+        }
+        .btn-submit:hover {
+            background-color: #333;
+        }
+        .register-link {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-weight: 400;
+            color: var(--text-color);
+        }
+        .register-link a {
+            font-weight: 600;
+            text-decoration: underline;
+            color: var(--text-color);
+        }
+        .forgot-password {
+            display: block;
+            text-align: right;
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            text-decoration: none;
+        }
+        .forgot-password:hover {
+            color: var(--dark-color);
+            text-decoration: underline;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
 
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+            .login-image {
+                display: none;
+            }
+            .login-form-container {
+                padding: 2rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
 <div class="login-container">
     <div class="login-image">
-        <!-- Replace with your actual image -->
-        <img src="https://via.placeholder.com/600x800/000000/FDE9BF?text=Your+Logo" alt="Login Image" style="max-width: 80%; height: auto;">
+        <div style="text-align: center;">
+            <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <h2>PDF-GEN</h2>
+            <p>Votre convertisseur de documents universel</p>
+        </div>
     </div>
     <div class="login-form-container">
-        <div class="nav-links">
-            <a href="{{ path('homepage') }}">Accueil</a>
-            <a href="{{ path('history') }}">Historique</a>
-            <a href="{{ path('subscription_change') }}">Plan</a>
-        </div>
-
         <form method="post">
             {% if error %}
                 <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
@@ -73,26 +134,31 @@
 
             {% if app.user %}
                 <div class="mb-3">
-                    You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+                    Vous êtes connecté en tant que {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Déconnexion</a>
                 </div>
             {% endif %}
 
-            <h1>Please sign in</h1>
-            <label for="inputEmail">Email</label>
-            <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-            <label for="inputPassword">Password</label>
-            <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+            <h1>Connexion</h1>
 
-            <input type="hidden" name="_csrf_token"
-                   value="{{ csrf_token('authenticate') }}"
-            >
+            <div class="form-group">
+                <label for="inputEmail" class="form-label">Email</label>
+                <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
+            </div>
 
-            <button class="btn btn-lg btn-primary mt-3" type="submit" style="width: 100%;">
-                Sign in
+            <div class="form-group">
+                <label for="inputPassword" class="form-label">Mot de passe</label>
+                <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+                <a href="{{ path('app_forgot_password_request') }}" class="forgot-password">Mot de passe oublié ?</a>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button class="btn-submit" type="submit">
+                Se connecter
             </button>
 
             <p class="register-link">
-                Pas de compte? <a href="{{ path('app_register') }}">Inscrivez-vous</a>
+                Pas de compte ? <a href="{{ path('app_register') }}">Inscrivez-vous</a>
             </p>
         </form>
     </div>

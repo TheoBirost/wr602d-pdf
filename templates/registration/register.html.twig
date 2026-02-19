@@ -1,9 +1,154 @@
-{% extends 'layout.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .register-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+        .register-image {
+            flex: 1;
+            background-color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+        }
+        .register-form-container {
+            flex: 1;
+            padding: 4rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: var(--bg-color);
+        }
+        .register-form-container h1 {
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        .btn-submit {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            text-transform: uppercase;
+            margin-top: 1rem;
+        }
+        .btn-submit:hover {
+            background-color: #333;
+        }
+        .login-link {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-weight: 400;
+            color: var(--text-color);
+        }
+        .login-link a {
+            font-weight: 600;
+            text-decoration: underline;
+            color: var(--text-color);
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .register-container {
+                flex-direction: column;
+            }
+            .register-image {
+                display: none;
+            }
+            .register-form-container {
+                padding: 2rem;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block content %}
-    <h1>Register</h1>
+<div class="register-container">
+    <div class="register-image">
+        <div style="text-align: center;">
+            <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="8.5" cy="7" r="4"></circle>
+                <line x1="20" y1="8" x2="20" y2="14"></line>
+                <line x1="23" y1="11" x2="17" y2="11"></line>
+            </svg>
+            <h2>Rejoignez PDF-GEN</h2>
+            <p>Créez votre compte gratuitement</p>
+        </div>
+    </div>
+    <div class="register-form-container">
+        <h1>Inscription</h1>
 
-    {# add your registration form here #}
+        {{ form_start(registrationForm) }}
+            {% if form_errors(registrationForm) %}
+                <div class="alert alert-danger">
+                    {{ form_errors(registrationForm) }}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control', 'placeholder': 'exemple@email.com'}}) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="form-group">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    {{ form_widget(registrationForm.agreeTerms) }}
+                    {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation') }}
+                </div>
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn-submit">S'inscrire</button>
+        {{ form_end(registrationForm) }}
+
+        <p class="login-link">
+            Déjà un compte ? <a href="{{ path('app_login') }}">Connectez-vous</a>
+        </p>
+    </div>
+</div>
 {% endblock %}

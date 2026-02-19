@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Email envoyé{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .check-email-container {
+            max-width: 500px;
+            margin: 4rem auto;
+            padding: 2rem;
+            background-color: #FFFFFF;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .icon-success {
+            width: 64px;
+            height: 64px;
+            color: #28a745;
+            margin-bottom: 1.5rem;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .message {
+            color: #666;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        .btn-home {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: background-color 0.2s;
+        }
+
+        .btn-home:hover {
+            background-color: #333;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="check-email-container">
+        <svg class="icon-success" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+
+        <h1 class="title">Email de réinitialisation envoyé</h1>
+
+        <p class="message">
+            Si un compte existe avec cette adresse email, un email a été envoyé contenant un lien pour réinitialiser votre mot de passe.
+            Ce lien expirera dans 1 heure.
+        </p>
+
+        <p class="message" style="font-size: 0.9rem;">
+            Si vous ne recevez pas d'email, veuillez vérifier votre dossier spam ou réessayer.
+        </p>
+
+        <a href="{{ path('homepage') }}" class="btn-home">Retour à l'accueil</a>
+    </div>
+{% endblock %}

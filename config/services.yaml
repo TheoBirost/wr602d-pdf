@@ -22,3 +22,8 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Service\YourGotenbergService:
+        arguments:
+            $gotenbergBaseUrl: '%env(GOTENBERG_URL)%' # Use an environment variable for the base URL
+

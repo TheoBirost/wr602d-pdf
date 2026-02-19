@@ -4,159 +4,257 @@
 
 {% block stylesheets %}
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
         .progress-section {
-            padding: 1rem 2rem;
+            padding: 1.5rem 3rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 0.9rem;
-            border-bottom: 1px solid var(--dark-color);
+            font-size: 0.875rem;
+            border-bottom: 1px solid #000000;
             flex-wrap: wrap;
-            gap: 1rem;
+            gap: 1.5rem;
         }
 
         .progress-bar-container {
             flex: 1;
-            margin: 0 2rem;
-            min-width: 200px;
+            margin: 0 2.5rem;
+            min-width: 250px;
         }
 
         .progress-text {
-            margin-bottom: 0.3rem;
+            margin-bottom: 0.5rem;
             white-space: nowrap;
+            font-weight: 500;
+            font-size: 0.813rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #4A5568;
         }
 
         .progress-bar {
             width: 100%;
-            height: 8px;
-            background-color: #FFFFFF;
-            border-radius: 10px;
+            height: 10px;
+            background-color: #E2E8F0;
+            border-radius: 20px;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
 
         .progress-fill {
             height: 100%;
-            background-color: var(--dark-color);
+            background: linear-gradient(90deg, var(--dark-color) 0%, #1a1a1a 100%);
             width: 50%;
-            transition: width 0.3s ease;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
         .plan-info {
             text-align: right;
+            font-weight: 600;
+            color: #2D3748;
+        }
+
+        .plan-info div:last-child {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: #718096;
+            margin-top: 0.25rem;
         }
 
         .content-container {
             text-align: center;
+            padding: 3rem 2rem;
         }
 
         .main-title {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            letter-spacing: 2px;
+            font-size: 4rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
         }
 
         .subtitle {
-            font-size: 1.1rem;
-            margin-bottom: 3rem;
+            font-size: 1.25rem;
+            margin-bottom: 4rem;
             font-weight: 400;
+            color: #4A5568;
+            letter-spacing: 0.3px;
         }
 
         .pdf-options {
             display: flex;
             justify-content: center;
-            gap: 1.5rem;
-            margin-bottom: 3rem;
+            gap: 2rem;
+            margin-bottom: 4rem;
             flex-wrap: wrap;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 0 2rem;
         }
 
         .pdf-option {
-            width: 180px;
-            height: 120px;
-            background-color: #C8CACE;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 140px; /* Reduced size */
+            height: 140px; /* Reduced size */
+            background: linear-gradient(135deg, #ffffff 0%, #f7fafc 100%);
+            border-radius: 24px;
+            padding: 1rem;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-weight: 500;
-            font-size: 0.9rem;
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 2px solid #E2E8F0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pdf-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(0,0,0,0.02) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
         }
 
         .pdf-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12), 0 8px 16px rgba(0,0,0,0.08);
+            border-color: var(--dark-color);
+        }
+
+        .pdf-option:hover::before {
+            opacity: 1;
+        }
+
+        .pdf-option.active {
+            background: linear-gradient(135deg, var(--dark-color) 0%, #1a1a1a 100%);
+            color: #FFFFFF;
+            border-color: var(--dark-color);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25), 0 10px 20px rgba(0,0,0,0.15);
+            transform: scale(1.05);
+        }
+
+        .pdf-option.active h3,
+        .pdf-option.active p {
+            color: #FFFFFF;
+        }
+
+        .pdf-option.active svg {
+            stroke: #FFFFFF;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+
+        .pdf-option h3 {
+            margin-top: 0.75rem;
+            margin-bottom: 0;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2D3748;
+            letter-spacing: 0.5px;
+        }
+
+        .pdf-option-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+            transition: all 0.3s ease;
+        }
+
+        .pdf-option:hover .pdf-option-icon {
+            transform: scale(1.1);
+        }
+
+        .pdf-option.active .pdf-option-icon {
+            transform: scale(1.15);
+        }
+
+        /* Hide other options when one is selected */
+        .pdf-options.has-selection .pdf-option:not(.active) {
+            display: none;
+        }
+
+        /* Center the active option */
+        .pdf-options.has-selection {
+            justify-content: center;
+            margin-bottom: 2rem;
         }
 
         #pdf-form-container {
-            margin: 3rem auto;
-            max-width: 600px;
-        }
-
-        .upload-zone {
-            width: 100%;
-            height: 200px;
-            background-color: #C8CACE;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 2rem;
-            cursor: pointer;
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            padding: 0.7rem 2rem;
-            background-color: var(--dark-color);
-            color: #FFFFFF;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 500;
-            text-transform: uppercase;
-            font-size: 0.85rem;
-        }
-
-        .back-btn {
+            margin: 0 auto 4rem auto;
+            max-width: 900px;
             background-color: transparent;
-            border: 1px solid var(--dark-color);
-            color: var(--dark-color);
+            padding: 0;
+            min-height: 200px;
+            position: relative;
         }
 
         .features {
             display: flex;
             justify-content: center;
-            gap: 3rem;
-            margin-top: 4rem;
-            padding-bottom: 2rem;
+            gap: 4rem;
+            margin-top: 5rem;
+            padding-bottom: 3rem;
             flex-wrap: wrap;
         }
 
         .feature {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
-            font-weight: 500;
+            gap: 0.75rem;
+            font-weight: 600;
             text-transform: uppercase;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
+            letter-spacing: 1px;
+            color: #2D3748;
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-2px);
+            color: var(--dark-color);
         }
 
         .feature-icon {
-            width: 20px;
-            height: 20px;
+            width: 24px;
+            height: 24px;
+            stroke-width: 2.5;
         }
 
         .hidden {
             display: none;
+        }
+
+        .loader {
+            border: 5px solid #E2E8F0;
+            border-top: 5px solid var(--dark-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 0.8s linear infinite;
+            margin: 3rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         /* Responsive adjustments */
@@ -164,21 +262,63 @@
             .progress-section {
                 flex-direction: column;
                 align-items: flex-start;
+                padding: 1.25rem 1.5rem;
             }
+
             .progress-bar-container {
                 width: 100%;
                 margin: 0;
             }
+
             .plan-info {
                 text-align: left;
                 width: 100%;
             }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .pdf-option {
+                width: 120px;
+                height: 120px;
+                padding: 1rem;
+            }
+
+            .pdf-option-icon {
+                width: 32px;
+                height: 32px;
+            }
+
+            .pdf-option h3 {
+                font-size: 0.9rem;
+            }
+
+            .features {
+                gap: 2rem;
+            }
+
+            .feature {
+                font-size: 0.75rem;
+            }
+        }
+
+        @media (max-width: 480px) {
             .main-title {
                 font-size: 2rem;
             }
+
+            .pdf-options {
+                gap: 1.5rem;
+            }
+
             .pdf-option {
-                width: 140px;
-                height: 100px;
+                width: 110px;
+                height: 110px;
             }
         }
     </style>
@@ -186,105 +326,132 @@
 
 {% block content %}
     <div class="progress-section">
-        <div class="progress-text">generation of available PDFs</div>
+        <div class="progress-text">Génération de PDFs disponibles</div>
         <div class="progress-bar-container">
             <div class="progress-bar">
                 <div class="progress-fill"></div>
             </div>
         </div>
-        <div>1/2 restants</div>
+        <div style="font-weight: 600; color: #2D3748;">1/2 restants</div>
         <div class="plan-info">
-            <div>plan actuel : STARTER</div>
-            <div style="font-size: 0.8rem;">Renouvellement : 1er Mars 2026</div>
+            <div>Plan actuel : STARTER</div>
+            <div>Renouvellement : 1er Mars 2026</div>
         </div>
     </div>
 
-    <h1 class="main-title">CONVERTISSEUR PDF</h1>
-    <p class="subtitle">Convertissez et modifiez instantanément tout type de document !</p>
+    <div class="content-container">
+        <h1 class="main-title">CONVERTISSEUR PDF</h1>
+        <p class="subtitle">Convertissez et modifiez instantanément tout type de document !</p>
 
-    <div class="pdf-options" id="options-container">
-        <div class="pdf-option" data-type="html">HTML</div>
-        <div class="pdf-option" data-type="url">URL</div>
-        <div class="pdf-option" data-type="word">WORD</div>
-        <div class="pdf-option" data-type="excel">EXCEL</div>
-        <div class="pdf-option" data-type="image">IMAGE</div>
-    </div>
-
-    <div id="pdf-form-container" class="hidden"></div>
-
-    <div class="features">
-        <div class="feature">
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-            </svg>
-            <span>CONFIDENTIEL</span>
+        <div class="pdf-options" id="options-container">
+            <div class="pdf-option" onclick="loadForm('html_file', this)">
+                <svg class="pdf-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <h3>HTML</h3>
+            </div>
+            <div class="pdf-option" onclick="loadForm('url', this)">
+                <svg class="pdf-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <h3>URL</h3>
+            </div>
+            <div class="pdf-option" onclick="loadForm('docx', this)">
+                <svg class="pdf-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                </svg>
+                <h3>WORD</h3>
+            </div>
+            <div class="pdf-option" onclick="loadForm('xlsx', this)">
+                <svg class="pdf-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="3" y1="9" x2="21" y2="9"></line>
+                    <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                <h3>EXCEL</h3>
+            </div>
+            <div class="pdf-option" onclick="loadForm('image', this)">
+                <svg class="pdf-option-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                </svg>
+                <h3>IMAGE</h3>
+            </div>
         </div>
-        <div class="feature">
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            <span>SIMPLE</span>
+
+        <div id="pdf-form-container" class="hidden">
+            <div id="form-content"></div>
         </div>
-        <div class="feature">
-            <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
-            <span>ULTRA-RAPIDE</span>
+
+        <div class="features">
+            <div class="feature">
+                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <span>Confidentiel</span>
+            </div>
+            <div class="feature">
+                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>Simple</span>
+            </div>
+            <div class="feature">
+                <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Ultra-rapide</span>
+            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block javascripts %}
     <script>
-        document.querySelectorAll('.pdf-option').forEach(option => {
-            option.addEventListener('click', function() {
-                const type = this.dataset.type;
+        function loadForm(type, element) {
+            // Add class to container to hide other options
+            document.getElementById('options-container').classList.add('has-selection');
 
-                // Masquer les options
-                document.getElementById('options-container').classList.add('hidden');
+            // Highlight active option
+            document.querySelectorAll('.pdf-option').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
 
-                // Afficher la zone de formulaire
-                const formContainer = document.getElementById('pdf-form-container');
-                formContainer.classList.remove('hidden');
+            const container = document.getElementById('pdf-form-container');
+            const content = document.getElementById('form-content');
 
-                // Créer le formulaire de téléchargement
-                formContainer.innerHTML = `
-                <div class="upload-zone" onclick="document.getElementById('file-input').click()">
-                    <input type="file" id="file-input" style="display: none;" accept="${getAcceptType(type)}">
-                    <p>Cliquez pour sélectionner un fichier ${type.toUpperCase()}</p>
-                </div>
-                <div class="action-buttons">
-                    <button class="action-btn back-btn" onclick="goBack()">RETOUR</button>
-                    <button class="action-btn" onclick="downloadPDF()">TELECHARGER</button>
-                    <button class="action-btn" onclick="addToFavorites()">FAVORIS</button>
-                </div>
-            `;
-            });
-        });
+            container.classList.remove('hidden');
+            content.innerHTML = '<div class="loader"></div>';
 
-        function getAcceptType(type) {
-            const types = {
-                'html': '.html,.htm',
-                'url': '*',
-                'word': '.doc,.docx',
-                'excel': '.xls,.xlsx',
-                'image': 'image/*'
-            };
-            return types[type] || '*';
+            fetch(`/pdf/generate/${type}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => response.text())
+                .then(html => {
+                    content.innerHTML = html;
+                })
+                .catch(error => {
+                    content.innerHTML = '<p style="color: red; text-align: center;">Une erreur est survenue lors du chargement du formulaire.</p>';
+                    console.error('Error:', error);
+                });
         }
 
         function goBack() {
             document.getElementById('pdf-form-container').classList.add('hidden');
-            document.getElementById('options-container').classList.remove('hidden');
-        }
-
-        function downloadPDF() {
-            alert('Téléchargement du PDF...');
-        }
-
-        function addToFavorites() {
-            alert('Ajouté aux favoris !');
+            document.getElementById('options-container').classList.remove('has-selection');
+            document.querySelectorAll('.pdf-option').forEach(el => el.classList.remove('active'));
         }
     </script>
 {% endblock %}
