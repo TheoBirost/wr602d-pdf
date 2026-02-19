@@ -1,9 +1,15 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Generate PDF{% endblock %}
+{% block title %}Générer PDF{% endblock %}
 
-{% block body %}
-    <h1>Generate PDF</h1>
+{% block content %}
+    <div style="max-width: 800px; margin: 0 auto;">
+        {% include 'pdf/_form.html.twig' with {'form': form, 'type': type} %}
+    </div>
 
-    {% include 'pdf/_form.html.twig' with {'form': form, 'type': type} %}
+    <script>
+        function goBack() {
+            window.location.href = "{{ path('homepage') }}";
+        }
+    </script>
 {% endblock %}

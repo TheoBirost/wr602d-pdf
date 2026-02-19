@@ -1,0 +1,151 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Contactez-nous - PDF-GEN{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .contact-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .contact-subtitle {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .contact-form-card {
+            background-color: #FFFFFF;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #E9ECEF;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .form-control:focus {
+            border-color: var(--dark-color);
+            outline: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background-color: #000000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .alert-success {
+            background-color: #d1fae5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .contact-form-card {
+                padding: 1.5rem;
+            }
+
+            .contact-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="contact-container">
+        <div class="contact-header">
+            <h1 class="contact-title">Contactez-nous</h1>
+            <p class="contact-subtitle">Une question ? Une suggestion ? N'hésitez pas à nous écrire.</p>
+        </div>
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+        <div class="contact-form-card">
+            {{ form_start(form) }}
+                <div class="form-group">
+                    {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_errors(form.name) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.email) }}
+                    {{ form_errors(form.email) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.subject, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.subject) }}
+                    {{ form_errors(form.subject) }}
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.message, null, {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.message) }}
+                    {{ form_errors(form.message) }}
+                </div>
+
+                {{ form_widget(form.submit) }}
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
