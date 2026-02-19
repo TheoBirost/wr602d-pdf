@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PDF Converters{% endblock %}
+
+{% block body %}
+    <style>
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .converter-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .converter-card h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .converter-card p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        .converter-card .btn-use {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .converter-card .btn-use:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <h1>Choose a PDF Converter</h1>
+
+    <div class="converter-grid">
+        {% for converter in converters %}
+            <div class="converter-card">
+                <h3>{{ converter.name }}</h3>
+                <p>{{ converter.description }}</p>
+                <a href="{{ path('pdf_generation', {'type': converter.type}) }}" class="btn-use">Use Converter</a>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
