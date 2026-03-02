@@ -124,6 +124,90 @@
             margin: 0 auto;
         }
 
+        /* Auth Form Specific Styles */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - 70px); /* Adjust based on your nav height */
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        .auth-form-card {
+            background-color: #FFFFFF;
+            padding: 3rem 2.5rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid #EAEAEA;
+        }
+
+        .auth-form-card h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+        }
+
+        .auth-form-card label {
+            display: block;
+            text-align: left;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #4A5568;
+            font-size: 0.9rem;
+        }
+
+        .auth-form-card input[type="text"],
+        .auth-form-card input[type="email"],
+        .auth-form-card input[type="password"] {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #CBD5E0;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--dark-color);
+            box-sizing: border-box;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .auth-form-card input[type="text"]:focus,
+        .auth-form-card input[type="email"]:focus,
+        .auth-form-card input[type="password"]:focus {
+            border-color: var(--dark-color);
+            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
+            outline: none;
+        }
+
+        .auth-form-card button[type="submit"] {
+            width: 100%;
+            padding: 0.9rem 1.5rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .auth-form-card button[type="submit"]:hover {
+            background-color: #000000;
+            transform: translateY(-2px);
+        }
+
+        .auth-form-card .error-message {
+            color: #E53E3E;
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .main-nav {
@@ -148,6 +232,14 @@
             .content-container {
                 padding: 2rem 1rem;
             }
+
+            .auth-container {
+                padding: 1rem;
+            }
+
+            .auth-form-card {
+                padding: 2rem 1.5rem;
+            }
         }
     </style>
     {% block stylesheets %}{% endblock %}
@@ -165,6 +257,7 @@
 
         <div class="auth-buttons">
             {% if app.user %}
+                <a href="{{ path('app_profile') }}" class="btn btn-primary">{{ app.user.firstname }} {{ app.user.lastname }}</a>
                 <a href="{{ path('app_logout') }}" class="btn btn-outline">Déconnexion</a>
             {% else %}
                 <a href="{{ path('app_login') }}" class="btn btn-outline">Connexion</a>
@@ -173,9 +266,11 @@
         </div>
     </nav>
 
-    <div class="content-container">
-        {% block content %}{% endblock %}
-    </div>
+    {% block body %}
+        <div class="content-container">
+            {% block content %}{% endblock %}
+        </div>
+    {% endblock %}
 
     {% block javascripts %}{% endblock %}
 </body>
