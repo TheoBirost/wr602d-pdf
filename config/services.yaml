@@ -20,10 +20,14 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
+    # prevent Doctrine entities from being autowired
+    App\Entity\:
+        resource: '../src/Entity/'
+        autowire: false
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
     App\Service\YourGotenbergService:
         arguments:
             $gotenbergBaseUrl: '%env(GOTENBERG_URL)%' # Use an environment variable for the base URL
-
