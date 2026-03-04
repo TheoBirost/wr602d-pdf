@@ -13,11 +13,21 @@
                     <img src="{{ asset('uploads/photos/' ~ app.user.photo) }}" alt="Photo de profil" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover;">
                 {% else %}
                     <div style="width: 80px; height: 80px; border-radius: 50%; background-color: #eee; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
-                        {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+                        {% if app.user.firstname and app.user.lastname %}
+                            {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+                        {% else %}
+                            {{ app.user.email|first|upper }}
+                        {% endif %}
                     </div>
                 {% endif %}
                 <div>
-                    <h2 style="margin: 0; font-size: 1.5rem;">{{ app.user.firstname }} {{ app.user.lastname }}</h2>
+                    <h2 style="margin: 0; font-size: 1.5rem;">
+                        {% if app.user.firstname and app.user.lastname %}
+                            {{ app.user.firstname }} {{ app.user.lastname }}
+                        {% else %}
+                            {{ app.user.email }}
+                        {% endif %}
+                    </h2>
                     <p style="margin: 0.2rem 0 0; color: #666;">{{ app.user.email }}</p>
                 </div>
             </div>

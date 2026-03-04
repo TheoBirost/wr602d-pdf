@@ -2,49 +2,75 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use App\Entity\Plan;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private UserPasswordHasherInterface $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
-        $plan = new Plan();
-        $plan->setName('STARTER');
-        $plan->setDescription('Plan gratuit - Idéal pour tester nos services');
-        $plan->setPrice(0);
-        $plan->setLimitGeneration(2);
-        $plan->setActive(true);
-        $plan->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($plan);
+        $plansData = [
+            [
+                'name' => 'STARTER',
+                'description' => 'Plan gratuit - Idéal pour tester nos services',
+                'price' => 0,
+                'limit' => 2,
+            ],
+            [
+                'name' => 'PRO',
+                'description' => 'Plan Basic - Pour un usage régulier',
+                'price' => 9,
+                'limit' => 20,
+            ],
+            [
+                'name' => 'ELITE',
+                'description' => 'Plan Premium - Pour les utilisateurs intensifs',
+                'price' => 29,
+                'limit' => 200,
+            ],
+            [
+                'name' => 'LEGEND',
+                'description' => 'Plan Entreprise - Solution complète pour les professionnels',
+                'price' => 99,
+                'limit' => 500,
+            ],
+        ];
 
-        $plan = new Plan();
-        $plan->setName('PRO');
-        $plan->setDescription('Plan Basic - Pour un usage régulier');
-        $plan->setPrice(9);
-        $plan->setLimitGeneration(20);
-        $plan->setActive(true);
-        $plan->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($plan);
+        $plans = [];
+        foreach ($plansData as $planData) {
+            $plan = new Plan();
+            $plan->setName($planData['name']);
+            $plan->setDescription($planData['description']);
+            $plan->setPrice($planData['price']);
+            $plan->setLimitGeneration($planData['limit']);
+            $plan->setActive(true);
+            $manager->persist($plan);
+            $plans[$planData['name']] = $plan;
+        }
 
-        $plan = new Plan();
-        $plan->setName('ELITE');
-        $plan->setDescription('Plan Premium - Pour les utilisateurs intensifs');
-        $plan->setPrice(29);
-        $plan->setLimitGeneration(200);
-        $plan->setActive(true);
-        $plan->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($plan);
+        $manager->flush();
 
-        $plan = new Plan();
-        $plan->setName('LEGEND');
-        $plan->setDescription('Plan Entreprise - Solution complète pour les professionnels');
-        $plan->setPrice(99);
-        $plan->setLimitGeneration(500);
-        $plan->setActive(true);
-        $plan->setCreatedAt(new \DateTimeImmutable());
-        $manager->persist($plan);
+        // Create a default user with the STARTER plan
+        $user = new User();
+        $user->setEmail('user@example.com');
+        $user->setFirstname('John');
+        $user->setLastname('Doe');
+        $user->setRoles(['ROLE_USER']);
+        $user->setPlan($plans['STARTER']);
+        $user->setIsVerified(true);
+        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
+        $user->setPassword($hashedPassword);
+        $manager->persist($user);
 
         $manager->flush();
     }

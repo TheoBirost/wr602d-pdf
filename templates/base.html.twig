@@ -129,7 +129,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: calc(100vh - 70px); /* Adjust based on your nav height */
+            min-height: calc(100vh - 150px); /* Adjust based on your nav height */
             padding: 2rem;
             box-sizing: border-box;
         }
@@ -250,14 +250,16 @@
 
         <div class="nav-links">
             <a href="{{ path('homepage') }}">Accueil</a>
-            <a href="{{ path('history') }}">Historique</a>
-            <a href="{{ path('subscription_change') }}">Plan</a>
+            {% if app.user %}
+                <a href="{{ path('history') }}">Historique</a>
+            {% endif %}
+            <a href="{{ path('app_subscription') }}">Plan</a>
             <a href="{{ path('app_contact') }}">Contact</a>
         </div>
 
         <div class="auth-buttons">
             {% if app.user %}
-                <a href="{{ path('app_profile') }}" class="btn btn-primary">{{ app.user.firstname }} {{ app.user.lastname }}</a>
+                <a href="{{ path('app_profile') }}" class="btn btn-primary">{{ app.user.firstname }}</a>
                 <a href="{{ path('app_logout') }}" class="btn btn-outline">Déconnexion</a>
             {% else %}
                 <a href="{{ path('app_login') }}" class="btn btn-outline">Connexion</a>
@@ -266,11 +268,9 @@
         </div>
     </nav>
 
-    {% block body %}
-        <div class="content-container">
-            {% block content %}{% endblock %}
-        </div>
-    {% endblock %}
+    <div class="content-container">
+        {% block content %}{% endblock %}
+    </div>
 
     {% block javascripts %}{% endblock %}
 </body>
