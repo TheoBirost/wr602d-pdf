@@ -4,7 +4,6 @@
 
 {% block stylesheets %}
     <style>
-        /* ... (tous les styles précédents restent les mêmes) ... */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
         * {
@@ -148,20 +147,18 @@
             gap: 0.4rem;
         }
 
-        .plan-badge {
-            height: 10px;
-            width: 10px;
-            border-radius: 50%;
-            border: none;
-            padding: 0;
-            text-indent: -9999px;
-            overflow: hidden;
+        .plan-tag {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.80rem;
+            font-weight: 800;
+            border: 2px solid black;
+            text-transform: uppercase;
         }
 
-        .plan-badge.starter { background-color: #F4E04D; }
-        .plan-badge.pro { background-color: #FF6B6B; }
-        .plan-badge.elite { background-color: #4ECDC4; }
-        .plan-badge.legend { background-color: #C792EA; }
+        .plan-tag.starter { background-color: #F4E04D; }
+        .plan-tag.pro { background-color: #FF6B6B; }
+        .plan-tag.elite { background-color: #4ECDC4; }
+        .plan-tag.legend { background-color: #C792EA; }
 
         #pdf-form-container {
             margin: 0 auto 4rem auto;
@@ -227,7 +224,7 @@
 
         <div class="progress-section">
             <div class="progress-text">Générations disponibles</div>
-            <div class="progress-bar-container">
+.            <div class="progress-bar-container">
                 <div class="progress-bar">
                     <div class="progress-fill" style="width: {{ progress_percentage }}%;"></div>
                 </div>
@@ -235,7 +232,6 @@
             <div style="font-weight: 600; color: #2D3748;">{{ generations_left }} / {{ generation_limit }} restants</div>
             <div class="plan-info">
                 <div>Plan actuel : {{ plan.name|upper }}</div>
-                {# Vous pouvez ajouter une date de renouvellement si vous en avez une #}
             </div>
         </div>
     {% endif %}
@@ -252,9 +248,8 @@
             {% for tool in tools %}
                 <div class="pdf-option" id="tool-card-{{ tool.routeParam }}" onclick="loadForm('{{ tool.routeParam }}', this)">
                     <div class="pdf-option-plans">
-                        {% for plan_name in tool.plans %}
-                            <span class="plan-badge {{ plan_name }}">{{ plan_name }}</span>
-                        {% endfor %}
+                        {% set min_plan = tool.plans[0] %}
+                        <span class="plan-tag {{ min_plan|lower }}">{{ min_plan }}</span>
                     </div>
                     <div class="pdf-option-icon">
                         {{ tool.logo|raw }}
@@ -272,5 +267,12 @@
 {% endblock %}
 
 {% block javascripts %}
-    {# ... javascripts ... #}
+    <script>
+        function loadForm(routeParam, cardElement) {
+            // Implement your logic to load the form for the selected tool
+            console.log('Loading form for:', routeParam);
+            // Example: redirect or fetch form via AJAX
+             window.location.href = '/tool/' + routeParam;
+        }
+    </script>
 {% endblock %}

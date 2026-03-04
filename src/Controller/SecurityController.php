@@ -12,6 +12,9 @@ class SecurityController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        if ($this->getUser()) {
+            return $this->redirectToRoute('app_profile');
+        }
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
 
@@ -22,6 +25,12 @@ class SecurityController extends AbstractController
             'last_username' => $lastUsername,
             'error' => $error,
         ]);
+    }
+
+    #[Route(path: '/login_check', name: 'app_login_check')]
+    public function loginCheck(): void
+    {
+        // This code is never executed.
     }
 
     #[Route(path: '/logout', name: 'app_logout')]

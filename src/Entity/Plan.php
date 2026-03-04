@@ -44,10 +44,10 @@ class Plan
     private ?\DateTime $specialPriceTo = null;
 
     #[ORM\Column]
-    private ?bool $active = null;
+    private bool $active = false;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private \DateTimeImmutable $createdAt;
 
     /**
      * @var Collection<int, User>
@@ -58,6 +58,7 @@ class Plan
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
@@ -67,7 +68,7 @@ class Plan
 
     public function getName(): ?string
     {
-        return $this->name;
+        return $this->name; 
     }
 
     public function setName(string $name): static
@@ -173,24 +174,24 @@ class Plan
         return $this;
     }
 
-    public function isActive(): ?bool
+    public function isActive(): bool
     {
         return $this->active;
     }
 
-    public function setActive(bool $active): static
+    public function setActive(bool $active): self
     {
         $this->active = $active;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
