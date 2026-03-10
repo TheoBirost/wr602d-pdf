@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\GenerationRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GenerationRepository::class)]
@@ -16,23 +14,25 @@ class Generation
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'generations')]
+    #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $file = null;
+    private ?string $toolName = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $filePath = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?\DateTimeImmutable $generatedAt = null;
 
-    /**
-     * @var Collection<int, UserContact>
-     */
-    #[ORM\ManyToMany(targetEntity: UserContact::class, inversedBy: 'generations')]
-    private Collection $userContacts;
+    #[ORM\Column(options: ['default' => false])]
+    private ?bool $isFavorite = false;
 
     public function __construct()
     {
-        $this->userContacts = new ArrayCollection();
+        $this->generatedAt = new \DateTimeImmutable();
+        $this->isFavorite = false;
     }
 
     public function getId(): ?int
@@ -52,52 +52,51 @@ class Generation
         return $this;
     }
 
-    public function getFile(): ?string
+    public function getToolName(): ?string
     {
-        return $this->file;
+        return $this->toolName;
     }
 
-    public function setFile(string $file): static
+    public function setToolName(string $toolName): static
     {
-        $this->file = $file;
+        $this->toolName = $toolName;
 
         return $this;
     }
 
-    public function getCreateadAt(): ?\DateTimeImmutable
+    public function getFilePath(): ?string
     {
-        return $this->createdAt;
+        return $this->filePath;
     }
 
-    public function setCreateadAt(\DateTimeImmutable $createdAt): static
+    public function setFilePath(string $filePath): static
     {
-        $this->createdAt = $createdAt;
+        $this->filePath = $filePath;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, UserContact>
-     */
-    public function getUserContacts(): Collection
+    public function getGeneratedAt(): ?\DateTimeImmutable
     {
-        return $this->userContacts;
+        return $this->generatedAt;
     }
 
-    public function addUserContact(UserContact $userContact): static
+    public function setGeneratedAt(\DateTimeImmutable $generatedAt): static
     {
-        if (!$this->userContacts->contains($userContact)) {
-            $this->userContacts->add($userContact);
-        }
+        $this->generatedAt = $generatedAt;
 
         return $this;
     }
 
-    public function removeUserContact(UserContact $userContact): static
+    public function isFavorite(): ?bool
     {
-        $this->userContacts->removeElement($userContact);
+        return $this->isFavorite;
+    }
+
+    public function setFavorite(bool $isFavorite): static
+    {
+        $this->isFavorite = $isFavorite;
 
         return $this;
     }
-
 }

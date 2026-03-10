@@ -1,10 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Générer PDF{% endblock %}
+{% block title %}Générer PDF - {{ tool.name }}{% endblock %}
 
-{% block content %}
-    <div style="max-width: 800px; margin: 0 auto;">
-        {% include 'pdf/_form.html.twig' with {'form': form, 'type': type} %}
+{% block body %}
+    <div class="content-container" style="max-width: 800px; margin: 2rem auto;">
+        {% include 'pdf/_form.html.twig' with {'form': form, 'type': type, 'tool': tool} %}
     </div>
 
     <script>

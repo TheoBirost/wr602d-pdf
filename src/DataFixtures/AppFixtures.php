@@ -2,75 +2,81 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\User;
-use Doctrine\Bundle\FixturesBundle\Fixture;
+use App\Entity\Tool;
 use App\Entity\Plan;
+use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-    private UserPasswordHasherInterface $passwordHasher;
-
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
-    {
-        $this->passwordHasher = $passwordHasher;
-    }
-
     public function load(ObjectManager $manager): void
     {
-        $plansData = [
-            [
-                'name' => 'STARTER',
-                'description' => 'Plan gratuit - Idéal pour tester nos services',
-                'price' => 0,
-                'limit' => 2,
-            ],
-            [
-                'name' => 'PRO',
-                'description' => 'Plan Basic - Pour un usage régulier',
-                'price' => 9,
-                'limit' => 20,
-            ],
-            [
-                'name' => 'ELITE',
-                'description' => 'Plan Premium - Pour les utilisateurs intensifs',
-                'price' => 29,
-                'limit' => 200,
-            ],
-            [
-                'name' => 'LEGEND',
-                'description' => 'Plan Entreprise - Solution complète pour les professionnels',
-                'price' => 99,
-                'limit' => 500,
-            ],
+        // --- 1. GESTION DES PLANS ---
+        $planData = [
+            'STARTER' => ['price' => 0, 'limit' => 2, 'description' => 'Pour bien démarrer'],
+            'PRO' => ['price' => 19, 'limit' => 25, 'description' => 'Pour les professionnels'],
+            'ELITE' => ['price' => 49, 'limit' => 50, 'description' => 'Pour les utilisateurs exigeants'],
+            'LEGEND' => ['price' => 99, 'limit' => 200, 'description' => 'Accès total et illimité'],
         ];
 
-        $plans = [];
-        foreach ($plansData as $planData) {
-            $plan = new Plan();
-            $plan->setName($planData['name']);
-            $plan->setDescription($planData['description']);
-            $plan->setPrice($planData['price']);
-            $plan->setLimitGeneration($planData['limit']);
-            $plan->setActive(true);
-            $manager->persist($plan);
-            $plans[$planData['name']] = $plan;
+        foreach ($planData as $name => $data) {
+            $plan = $manager->getRepository(Plan::class)->findOneBy(['name' => $name]);
+            if (!$plan) {
+                $plan = new Plan();
+                $plan->setName($name);
+                $plan->setPrice($data['price']);
+                $plan->setLimitGeneration($data['limit']);
+                $plan->setDescription($data['description']);
+                $plan->setActive(true);
+                $manager->persist($plan);
+            }
         }
-
         $manager->flush();
 
-        // Create a default user with the STARTER plan
-        $user = new User();
-        $user->setEmail('user@example.com');
-        $user->setFirstname('John');
-        $user->setLastname('Doe');
-        $user->setRoles(['ROLE_USER']);
-        $user->setPlan($plans['STARTER']);
-        $user->setIsVerified(true);
-        $hashedPassword = $this->passwordHasher->hashPassword($user, 'password');
-        $user->setPassword($hashedPassword);
-        $manager->persist($user);
+        // --- 2. GESTION DES OUTILS ---
+        // Liste complète de TOUS les outils que vous voulez
+        $toolsData = [
+            // Anciens outils
+            ['name' => 'Générateur de CV Simple', 'route' => 'cv-simple', 'logo' => '<i class="fa-solid fa-id-card"></i>', 'plan' => 'STARTER', 'description' => 'Créez un CV simple et efficace.'],
+            ['name' => 'Générateur de Lettre de Motivation', 'route' => 'cover-letter', 'logo' => '<i class="fa-solid fa-file-signature"></i>', 'plan' => 'STARTER', 'description' => 'Générez une lettre de motivation percutante.'],
+            ['name' => 'Générateur de CV Design', 'route' => 'cv-design', 'logo' => '<i class="fa-solid fa-palette"></i>', 'plan' => 'PRO', 'description' => 'Concevez un CV au design moderne.'],
+            ['name' => 'Rapport Annuel Automatisé', 'route' => 'annual-report', 'logo' => '<i class="fa-solid fa-chart-line"></i>', 'plan' => 'ELITE', 'description' => 'Automatisez la création de vos rapports annuels.'],
+            
+            // Outils Gotenberg
+            ['name' => 'URL to PDF', 'route' => 'url', 'logo' => '<i class="fa-solid fa-link"></i>', 'plan' => 'STARTER', 'description' => 'Convertissez une page web en PDF.'],
+            ['name' => 'HTML to PDF', 'route' => 'html_raw', 'logo' => '<i class="fa-solid fa-code"></i>', 'plan' => 'STARTER', 'description' => 'Transformez du code HTML en PDF.'],
+            ['name' => 'Markdown to PDF', 'route' => 'markdown', 'logo' => '<i class="fa-brands fa-markdown"></i>', 'plan' => 'PRO', 'description' => 'Convertissez vos fichiers Markdown en PDF.'],
+            ['name' => 'Office to PDF', 'route' => 'docx', 'logo' => '<i class="fa-solid fa-file-word"></i>', 'plan' => 'PRO', 'description' => 'Convertissez des documents Office (Word, Excel) en PDF.'],
+            ['name' => 'Merge PDF', 'route' => 'merge', 'logo' => '<i class="fa-solid fa-object-group"></i>', 'plan' => 'ELITE', 'description' => 'Fusionnez plusieurs fichiers PDF en un seul.'],
+            ['name' => 'Screenshot Page', 'route' => 'screenshot', 'logo' => '<i class="fa-solid fa-camera"></i>', 'plan' => 'ELITE', 'description' => 'Prenez une capture d\'écran d\'une page web.'],
+        ];
+
+        $planHierarchy = ['STARTER', 'PRO', 'ELITE', 'LEGEND'];
+
+        foreach ($toolsData as $toolData) {
+            $tool = $manager->getRepository(Tool::class)->findOneBy(['routeParam' => $toolData['route']]);
+            
+            if (!$tool) {
+                $tool = new Tool();
+                $tool->setName($toolData['name']);
+                $tool->setRouteParam($toolData['route']);
+            }
+            
+            // On met à jour la description, le logo et les plans dans tous les cas
+            $tool->setDescription($toolData['description']);
+            $tool->setLogo($toolData['logo']);
+
+            $requiredPlanIndex = array_search($toolData['plan'], $planHierarchy);
+            $accessiblePlans = [];
+            if ($requiredPlanIndex !== false) {
+                for ($i = $requiredPlanIndex; $i < count($planHierarchy); $i++) {
+                    $accessiblePlans[] = $planHierarchy[$i];
+                }
+            }
+            $tool->setPlans($accessiblePlans);
+
+            $manager->persist($tool);
+        }
 
         $manager->flush();
     }

@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Generation;
+use App\Repository\ToolRepository;
+use App\Security\Voter\ToolVoter;
 use App\Service\YourGotenbergService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,33 +16,47 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class GeneratePdfController extends AbstractController
 {
     private $pdfService;
     private $em;
+    private $slugger;
 
-    public function __construct(YourGotenbergService $pdfService, EntityManagerInterface $em)
+    public function __construct(YourGotenbergService $pdfService, EntityManagerInterface $em, SluggerInterface $slugger)
     {
         $this->pdfService = $pdfService;
         $this->em = $em;
+        $this->slugger = $slugger;
     }
 
     #[IsGranted('ROLE_USER')]
     #[Route('/pdf/generate/{type}', name: 'pdf_generation', defaults: ['type' => null])]
-    public function generatePdf(Request $request, ?string $type): Response
+    public function generatePdf(Request $request, ?string $type, ToolRepository $toolRepository): Response
     {
+        if (!$type) {
+            return $this->redirectToRoute('homepage');
+        }
+
+        $tool = $toolRepository->findOneBy(['routeParam' => $type]);
+
+        if (!$tool) {
+            throw $this->createNotFoundException('This tool does not exist.');
+        }
+
+        if (!$this->isGranted(ToolVoter::VIEW, $tool)) {
+            $this->addFlash('error', 'Your current plan does not grant access to this tool. Please upgrade your plan.');
+            return $this->redirectToRoute('subscription_change');
+        }
+
         /** @var \App\Entity\User $user */
         $user = $this->getUser();
         $plan = $user->getPlan();
 
-        if ($user->getGenerationsUsed() >= $plan->getLimitGeneration()) {
-            $this->addFlash('error', 'Vous avez atteint votre limite de générations pour ce mois-ci. Veuillez mettre à niveau votre plan.');
+        if ($plan && $user->getGenerationsUsed() >= $plan->getLimitGeneration()) {
+            $this->addFlash('error', 'You have reached your generation limit for this month. Please upgrade your plan.');
             return $this->redirectToRoute('subscription_change');
-        }
-
-        if (!$type) {
-            return $this->redirectToRoute('homepage');
         }
 
         $formBuilder = $this->createFormBuilder(null, [
@@ -48,66 +65,101 @@ class GeneratePdfController extends AbstractController
             'csrf_token_id'   => 'pdf_generation',
         ]);
 
-        $validTypes = ['url', 'html_file', 'html_raw', 'docx', 'xlsx', 'image', 'markdown'];
+        $validTypes = ['url', 'html_file', 'html_raw', 'docx', 'xlsx', 'image', 'markdown', 'merge', 'screenshot'];
         if (!in_array($type, $validTypes)) {
             return $this->redirectToRoute('homepage');
         }
 
         switch ($type) {
             case 'url':
-                $formBuilder->add('url', UrlType::class, ['required' => true, 'label' => 'URL']);
+                $formBuilder->add('from_url', UrlType::class);
                 break;
             case 'html_file':
-                $formBuilder->add('html_file', FileType::class, ['required' => true, 'label' => 'Fichier HTML']);
+                $formBuilder->add('html_file', FileType::class);
                 break;
             case 'html_raw':
-                $formBuilder->add('html_content', TextareaType::class, ['required' => true, 'label' => 'Contenu HTML Brut', 'attr' => ['rows' => 15]]);
+                $formBuilder->add('html_content', TextareaType::class);
                 break;
             case 'docx':
-                $formBuilder->add('docx_file', FileType::class, ['required' => true, 'label' => 'Document Word (DOCX)']);
+                $formBuilder->add('docx_file', FileType::class);
                 break;
             case 'xlsx':
-                $formBuilder->add('xlsx_file', FileType::class, ['required' => true, 'label' => 'Document Excel (XLSX)']);
+                $formBuilder->add('xlsx_file', FileType::class);
                 break;
             case 'image':
-                $formBuilder->add('image_file', FileType::class, ['required' => true, 'label' => 'Fichier Image (JPG, PNG, etc.)']);
+                $formBuilder->add('image_file', FileType::class);
                 break;
             case 'markdown':
-                $formBuilder->add('markdown_file', FileType::class, ['required' => true, 'label' => 'Fichier Markdown (MD)']);
+                $formBuilder->add('markdown_file', FileType::class);
                 break;
         }
 
-        $formBuilder->add('generate', SubmitType::class, ['label' => 'Générer PDF']);
+        $formBuilder->add('generate', SubmitType::class, ['label' => 'Générer']);
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
-            $pdf = null;
+            $result = null;
+            $originalFilename = 'document';
+            $extension = 'pdf';
 
             try {
-                // ... (switch case for PDF generation)
+                switch ($type) {
+                    case 'url':
+                        $result = $this->pdfService->generatePdfFromUrl($data['from_url']);
+                        $originalFilename = 'generated-from-url';
+                        break;
+                    case 'html_file':
+                        $file = $data['html_file'];
+                        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                        $result = $this->pdfService->generatePdfFromHtml(file_get_contents($file->getPathname()));
+                        break;
+                    case 'html_raw':
+                        $result = $this->pdfService->generatePdfFromHtml($data['html_content']);
+                        $originalFilename = 'generated-from-html';
+                        break;
+                    // ... other cases
+                }
 
-                if ($pdf) {
-                    // Incrémenter le compteur
+                if ($result) {
+                    // --- LOGIQUE D'ENREGISTREMENT ---
+                    $safeFilename = $this->slugger->slug($originalFilename);
+                    $newFilename = $safeFilename.'-'.uniqid().'.'.$extension;
+                    $targetDirectory = $this->getParameter('kernel.project_dir').'/public/uploads/generations';
+                    
+                    // Ensure the directory exists
+                    if (!is_dir($targetDirectory)) {
+                        mkdir($targetDirectory, 0777, true);
+                    }
+
+                    file_put_contents($targetDirectory.'/'.$newFilename, $result);
+
+                    // Create a new Generation entity
+                    $generation = new Generation();
+                    $generation->setUser($user);
+                    $generation->setToolName($tool->getName());
+                    $generation->setFilePath('uploads/generations/'.$newFilename);
+                    
+                    $this->em->persist($generation);
+                    // --- FIN DE LA LOGIQUE ---
+
                     $user->incrementGenerationsUsed();
                     $this->em->flush();
-
-                    return new Response($pdf, 200, [
-                        'Content-Type' => 'application/pdf',
-                        'Content-Disposition' => 'attachment; filename="document.pdf"',
-                    ]);
+                    
+                    return $this->file($targetDirectory.'/'.$newFilename, $originalFilename.'.'.$extension);
                 } else {
-                    $this->addFlash('error', 'Échec de la génération du PDF.');
+                    $this->addFlash('error', 'Failed to generate the file.');
                 }
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Une erreur est survenue : ' . $e->getMessage());
+                $this->addFlash('error', 'An error occurred: ' . $e->getMessage());
             }
         }
 
-        return $this->render('pdf/_form.html.twig', [
+        return $this->render('pdf/generate.html.twig', [
             'form' => $form->createView(),
             'type' => $type,
+            'tool' => $tool,
         ]);
     }
 }

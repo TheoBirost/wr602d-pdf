@@ -1,151 +1,96 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Contactez-nous - PDF-GEN{% endblock %}
+{% block title %}Contactez-nous{% endblock %}
 
 {% block stylesheets %}
     <style>
-        .contact-container {
-            max-width: 800px;
-            margin: 0 auto;
+        .contact-wrapper {
+            display: flex;
+            min-height: calc(100vh - 75px);
+        }
+        .contact-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5e6c8;
             padding: 2rem;
         }
-
-        .contact-header {
-            text-align: center;
-            margin-bottom: 3rem;
+        .contact-left img {
+            max-width: 100%;
+            height: auto;
         }
-
-        .contact-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 1rem;
-            color: var(--dark-color);
+        .contact-right {
+            flex: 1;
+            background: #E8D4B8; /* COULEUR MISE A JOUR */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
         }
-
-        .contact-subtitle {
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        .contact-form-card {
-            background-color: #FFFFFF;
-            border-radius: 16px;
-            padding: 3rem;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-
-        .form-control {
+        .contact-card {
             width: 100%;
+            max-width: 420px;
+            background: transparent;
+        }
+        .contact-card h1 {
+            background: #1a1a1a;
+            color: #fff;
+            text-align: center;
             padding: 1rem;
-            border: 2px solid #E9ECEF;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
+            margin: 0 0 1.5rem 0;
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .form-group { margin-bottom: 1rem; }
+        label { display: none; }
+        input[type="text"], input[type="email"], textarea {
+            width: 100%;
+            padding: 0.75rem;
+            background: #d9d9d9;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
             box-sizing: border-box;
+            color: #333;
             font-family: inherit;
         }
-
-        .form-control:focus {
-            border-color: var(--dark-color);
-            outline: none;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 1rem;
-            background-color: var(--dark-color);
-            color: #FFFFFF;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
-        }
-
-        .btn-submit:hover {
-            background-color: #000000;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
-
-        .alert-success {
-            background-color: #d1fae5;
-            border: 1px solid #a7f3d0;
-            color: #065f46;
-            padding: 1rem;
-            border-radius: 8px;
-            margin-bottom: 2rem;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        @media (max-width: 768px) {
-            .contact-form-card {
-                padding: 1.5rem;
-            }
-
-            .contact-title {
-                font-size: 2rem;
-            }
-        }
+        input::placeholder, textarea::placeholder { color: #666; }
+        .btn-submit { width: 100%; padding: 0.85rem; background: #1a1a1a; color: #fff; border: none; font-weight: 800; font-size: 1rem; letter-spacing: 1.5px; text-transform: uppercase; cursor: pointer; margin-top: 0.5rem; border-radius: 3px; transition: background 0.2s; }
+        .btn-submit:hover { background: #333; }
     </style>
 {% endblock %}
 
-{% block content %}
-    <div class="contact-container">
-        <div class="contact-header">
-            <h1 class="contact-title">Contactez-nous</h1>
-            <p class="contact-subtitle">Une question ? Une suggestion ? N'hésitez pas à nous écrire.</p>
+{% block body %}
+    <div class="contact-wrapper">
+        <div class="contact-left">
+            <img src="{{ asset('images/welcome-illustration.png') }}" alt="Contact illustration">
         </div>
-
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success">
-                {{ message }}
+        <div class="contact-right">
+            <div class="contact-card">
+                <h1>Contactez-nous</h1>
+                {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                    <div class="form-group">
+                        {{ form_widget(form.name, {'attr': {'placeholder': 'Votre nom'}}) }}
+                        {{ form_errors(form.name) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_widget(form.email, {'attr': {'placeholder': 'Votre email'}}) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_widget(form.subject, {'attr': {'placeholder': 'Sujet'}}) }}
+                        {{ form_errors(form.subject) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_widget(form.message, {'attr': {'placeholder': 'Votre message...', 'rows': 5}}) }}
+                        {{ form_errors(form.message) }}
+                    </div>
+                    <button type="submit" class="btn-submit">{{ form.submit.vars.label }}</button>
+                {{ form_end(form) }}
             </div>
-        {% endfor %}
-
-        <div class="contact-form-card">
-            {{ form_start(form) }}
-                <div class="form-group">
-                    {{ form_label(form.name, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.name) }}
-                    {{ form_errors(form.name) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.email) }}
-                    {{ form_errors(form.email) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.subject, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.subject) }}
-                    {{ form_errors(form.subject) }}
-                </div>
-
-                <div class="form-group">
-                    {{ form_label(form.message, null, {'label_attr': {'class': 'form-label'}}) }}
-                    {{ form_widget(form.message) }}
-                    {{ form_errors(form.message) }}
-                </div>
-
-                {{ form_widget(form.submit) }}
-            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}

@@ -1,6 +1,8 @@
 {# templates/pdf/_form.html.twig #}
 
-<div class="converter-form-content">
+{% set has_access = tool is defined and can_user_use_tool(app.user, tool) %}
+
+<div class="converter-form-content {% if not has_access %}disabled{% endif %}">
 
     {% for message in app.flashes('error') %}
         <div class="alert alert-danger">
@@ -13,7 +15,13 @@
         </div>
     {% endfor %}
 
-    {{ form_start(form, {'attr': {'class': 'pdf-generation-form'}}) }}
+    {% if not has_access %}
+        <div class="alert alert-danger">
+            You do not have access to this tool. Please upgrade your plan.
+        </div>
+    {% endif %}
+
+    {{ form_start(form, {'attr': {'class': 'pdf-generation-form', 'disabled': not has_access}}) }}
 
     <div class="form-input-container">
         {% if type == 'url' %}
@@ -23,11 +31,11 @@
                     <line x1="2" y1="12" x2="22" y2="12"></line>
                     <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
                 </svg>
-                {{ form_widget(form.url, {'attr': {'class': 'modern-input', 'placeholder': 'https://exemple.com'}}) }}
+                {{ form_widget(form.from_url, {'attr': {'class': 'modern-input', 'placeholder': 'https://exemple.com', 'disabled': not has_access}}) }}
             </div>
-            {{ form_errors(form.url) }}
+            {{ form_errors(form.from_url) }}
         {% elseif type == 'html_raw' %}
-            {{ form_widget(form.html_content, {'attr': {'class': 'modern-textarea', 'placeholder': 'Collez votre code HTML ici...'}}) }}
+            {{ form_widget(form.html_content, {'attr': {'class': 'modern-textarea', 'placeholder': 'Collez votre code HTML ici...', 'disabled': not has_access}}) }}
             {{ form_errors(form.html_content) }}
         {% else %}
             {# File inputs #}
@@ -44,19 +52,19 @@
                 <p class="selected-file-name"></p>
 
                 {% if type == 'html_file' %}
-                    {{ form_widget(form.html_file, {'attr': {'class': 'file-input'}}) }}
+                    {{ form_widget(form.html_file, {'attr': {'class': 'file-input', 'disabled': not has_access}}) }}
                     {{ form_errors(form.html_file) }}
                 {% elseif type == 'docx' %}
-                    {{ form_widget(form.docx_file, {'attr': {'class': 'file-input'}}) }}
+                    {{ form_widget(form.docx_file, {'attr': {'class': 'file-input', 'disabled': not has_access}}) }}
                     {{ form_errors(form.docx_file) }}
                 {% elseif type == 'xlsx' %}
-                    {{ form_widget(form.xlsx_file, {'attr': {'class': 'file-input'}}) }}
+                    {{ form_widget(form.xlsx_file, {'attr': {'class': 'file-input', 'disabled': not has_access}}) }}
                     {{ form_errors(form.xlsx_file) }}
                 {% elseif type == 'image' %}
-                    {{ form_widget(form.image_file, {'attr': {'class': 'file-input'}}) }}
+                    {{ form_widget(form.image_file, {'attr': {'class': 'file-input', 'disabled': not has_access}}) }}
                     {{ form_errors(form.image_file) }}
                 {% elseif type == 'markdown' %}
-                    {{ form_widget(form.markdown_file, {'attr': {'class': 'file-input'}}) }}
+                    {{ form_widget(form.markdown_file, {'attr': {'class': 'file-input', 'disabled': not has_access}}) }}
                     {{ form_errors(form.markdown_file) }}
                 {% endif %}
             </div>
@@ -71,12 +79,16 @@
             </svg>
             Annuler
         </button>
-        {{ form_widget(form.generate, {'attr': {'class': 'action-btn generate-btn'}}) }}
+        {{ form_widget(form.generate, {'attr': {'class': 'action-btn generate-btn', 'disabled': not has_access}}) }}
     </div>
     {{ form_end(form) }}
 </div>
 
 <style>
+    .disabled {
+        pointer-events: none;
+        opacity: 0.5;
+    }
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
     .converter-form-content {
