@@ -40,13 +40,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, UserContact>
      */
-    #[ORM\OneToMany(targetEntity: UserContact::class, mappedBy: 'userId')]
+    #[ORM\OneToMany(targetEntity: UserContact::class, mappedBy: 'user')]
     private Collection $userContacts;
 
     /**
      * @var Collection<int, Generation>
      */
-    #[ORM\OneToMany(targetEntity: Generation::class, mappedBy: 'user_id')]
+    #[ORM\OneToMany(targetEntity: Generation::class, mappedBy: 'user')]
     private Collection $generations;
 
     #[ORM\Column(length: 255)]
@@ -81,7 +81,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->userContacts = new ArrayCollection();
         $this->generations = new ArrayCollection();
-        $this->generationsUsed = 0; // Initialize generationsUsed
+        $this->generationsUsed = 0;
     }
 
     public function getId(): ?int
@@ -148,15 +148,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * Ensure the session doesn't contain actual password hashes by CRC32C-hashing them, as supported since Symfony 7.3.
-     */
-    public function __serialize(): array
+    public function incrementGenerationsUsed(): static
     {
-        $data = (array) $this;
-        $data["\0".self::class."\0password"] = hash('crc32c', $this->password);
+        $this->generationsUsed++;
 
-        return $data;
+        return $this;
     }
 
     #[\Deprecated]
@@ -177,7 +173,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->userContacts->contains($userContact)) {
             $this->userContacts->add($userContact);
-            $userContact->setUserId($this);
+            $userContact->setUser($this);
         }
 
         return $this;
@@ -187,8 +183,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->userContacts->removeElement($userContact)) {
             // set the owning side to null (unless already changed)
-            if ($userContact->getUserId() === $this) {
-                $userContact->setUserId(null);
+            if ($userContact->getUser() === $this) {
+                $userContact->setUser(null);
             }
         }
 
@@ -207,7 +203,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->generations->contains($generation)) {
             $this->generations->add($generation);
-            $generation->setUserId($this);
+            $generation->setUser($this);
         }
 
         return $this;
@@ -217,8 +213,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->generations->removeElement($generation)) {
             // set the owning side to null (unless already changed)
-            if ($generation->getUserId() === $this) {
-                $generation->setUserId(null);
+            if ($generation->getUser() === $this) {
+                $generation->setUser(null);
             }
         }
 

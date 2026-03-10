@@ -1,9 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ tool_name }}{% endblock %}
+{% block title %}{{ tool.name }}{% endblock %}
 
-{% block content %}
-    <h1>{{ tool_name }}</h1>
-    <p>Cette page contiendra bientôt l'outil de génération.</p>
-    <p><a href="{{ path('homepage') }}">Retour à l'accueil</a></p>
+{% block stylesheets %}
+<style>
+    .tool-container {
+        max-width: 900px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background-color: #fff;
+        border: 1px solid #EAEAEA;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        text-align: center;
+    }
+    .tool-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--dark-color);
+    }
+    .tool-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+    }
+    .tool-description {
+        font-size: 1.1rem;
+        color: #718096;
+        margin-bottom: 2rem;
+    }
+    .tool-content {
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #E2E8F0;
+        text-align: left;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+    <div class="content-container">
+        <div class="tool-container">
+            <div class="tool-icon">
+                {{ tool.logo|raw }}
+            </div>
+            <h1 class="tool-title">{{ tool.name }}</h1>
+            <p class="tool-description">{{ tool.description }}</p>
+
+            <div class="tool-content">
+                <p>Le formulaire et la logique pour l'outil "<strong>{{ tool.name }}</strong>" sont en cours de construction.</p>
+                <p>Vous pouvez commencer à développer cette fonctionnalité ici : <code>templates/tool/index.html.twig</code></p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

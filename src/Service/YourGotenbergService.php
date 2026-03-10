@@ -28,28 +28,17 @@ class YourGotenbergService
             
             foreach ($files as $name => $file) {
                 if ($file instanceof UploadedFile) {
-                    // For Gotenberg, the field name is usually 'files'
-                    // But for HTML conversion, one file MUST be named 'index.html'
-                    // We handle this by checking if the key is 'index.html' or similar if needed,
-                    // but standard multipart upload uses the filename property.
-                    
-                    // If the key in $files array is 'index.html', we force the filename to be index.html
                     $filename = $file->getClientOriginalName();
                     if ($name === 'index.html') {
                         $filename = 'index.html';
-                        // The field name for Gotenberg is still 'files' usually
                         $name = 'files'; 
                     }
-                    
                     $formFieldsData[$name] = DataPart::fromPath($file->getRealPath(), $filename);
                 } elseif (is_string($file)) { 
-                    // String content (e.g. raw HTML)
-                    // If the key is 'index.html', we set the filename to index.html
                     $filename = 'index.html';
                     if ($name === 'index.html') {
                         $name = 'files';
                     }
-                    
                     $formFieldsData[$name] = new DataPart($file, $filename, 'text/html');
                 }
             }
@@ -83,7 +72,6 @@ class YourGotenbergService
     {
         $files = [];
         if ($htmlFile) {
-            // We use 'index.html' as the key to signal our sendGotenbergRequest to name the file 'index.html'
             $files['index.html'] = $htmlFile;
         } elseif ($htmlContent) {
             $files['index.html'] = $htmlContent;
@@ -104,5 +92,22 @@ class YourGotenbergService
     public function generatePdfFromImage(UploadedFile $imageFile): ?string
     {
         return $this->sendGotenbergRequest('/forms/libreoffice/convert', ['files' => $imageFile]);
+    }
+
+    public function mergePdfs(array $files): ?string
+    {
+        $dataParts = [];
+        foreach ($files as $file) {
+            if ($file instanceof UploadedFile) {
+                $dataParts[] = DataPart::fromPath($file->getRealPath());
+            }
+        }
+        return $this->sendGotenbergRequest('/forms/pdfengines/merge', ['files' => $dataParts]);
+    }
+
+    public function generateScreenshotFromUrl(string $url): ?string
+    {
+        // Note: This returns a PNG, not a PDF. The response headers should be adjusted in the controller.
+        return $this->sendGotenbergRequest('/forms/chromium/screenshot/url', [], ['url' => $url]);
     }
 }

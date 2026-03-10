@@ -19,6 +19,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
         }
         .converter-card h3 {
             color: #333;
@@ -44,16 +45,29 @@
         .converter-card .btn-use:hover {
             background-color: #0056b3;
         }
+        .converter-card.disabled {
+            background-color: #f1f1f1;
+            opacity: 0.6;
+        }
+        .converter-card.disabled .btn-use {
+            background-color: #6c757d;
+            cursor: pointer;
+        }
     </style>
 
     <h1>Choose a PDF Converter</h1>
 
     <div class="converter-grid">
-        {% for converter in converters %}
-            <div class="converter-card">
-                <h3>{{ converter.name }}</h3>
-                <p>{{ converter.description }}</p>
-                <a href="{{ path('pdf_generation', {'type': converter.type}) }}" class="btn-use">Use Converter</a>
+        {% for tool in tools %}
+            {% set has_access = app.user and can_user_use_tool(app.user, tool) %}
+            <div class="converter-card {% if not has_access %}disabled{% endif %}">
+                <h3>{{ tool.name }}</h3>
+                <p>{{ tool.description }}</p>
+                {% if has_access %}
+                    <a href="{{ path('pdf_generation', {'type': tool.routeParam}) }}" class="btn-use">Use Converter</a>
+                {% else %}
+                    <a href="{{ path('subscription_change') }}" class="btn-use">Upgrade Plan</a>
+                {% endif %}
             </div>
         {% endfor %}
     </div>

@@ -4,12 +4,10 @@
 
 {% block stylesheets %}
     <style>
-
-
         .plans-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 0 1rem 3rem 1rem;
+            padding: 3rem 1rem;
             text-align: center;
         }
 
@@ -206,8 +204,8 @@
     </style>
 {% endblock %}
 
-{% block content %}
-    <div class="plans-container">
+{% block body %}
+    <div class="plans-container" data-animation>
         <div class="plans-header">
             <h1 class="plans-title">CHOOSE YOUR PLAN</h1>
         </div>
@@ -219,12 +217,12 @@
                     <div class="plan-tagline">{{ plan.description }}</div>
 
                     <div class="plan-price-box">
-                        <div class="plan-price">${{ plan.price }}<span>/month</span></div>
+                        <div class="plan-price">{{ plan.price }}€<span>/month</span></div>
                     </div>
 
                     <ul class="plan-features">
                         {% for tool in tools %}
-                            {% if is_tool_in_plan(tool, plan, plans) %}
+                            {% if is_tool_in_plan(tool, plan) %}
                                 <li class="plan-feature">
                                     <span class="feature-icon check">✓</span>
                                     {{ tool.name }}
@@ -238,10 +236,13 @@
                         {% endfor %}
                     </ul>
 
-                    {% if app.user and app.user.plan == plan %}
-                        <a href="#" class="btn-plan btn-plan-solid">✓ Selected</a>
+                    {% if app.user and app.user.plan.id == plan.id %}
+                        <button class="btn-plan btn-plan-solid" disabled>✓ Selected</button>
                     {% else %}
-                        <a href="{{ path('app_subscription', {'id': plan.id}) }}" class="btn-plan btn-plan-outline">Choose plan</a>
+                        <form action="{{ path('subscription_change_handle', {'id': plan.id}) }}" method="post" style="margin-top: auto;">
+                            <input type="hidden" name="token" value="{{ csrf_token('change-plan') }}" />
+                            <button type="submit" class="btn-plan btn-plan-outline">Choose plan</button>
+                        </form>
                     {% endif %}
                 </div>
             {% endfor %}

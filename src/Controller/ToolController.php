@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\ToolRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -11,35 +12,20 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/tool')]
 class ToolController extends AbstractController
 {
-    #[Route('/cv-simple', name: 'app_tool_cv_simple')]
-    public function cvSimple(): Response
+    #[Route('/{routeParam}', name: 'app_tool_show')]
+    public function showTool(string $routeParam, ToolRepository $toolRepository): Response
     {
-        return $this->render('tool/index.html.twig', [
-            'tool_name' => 'Générateur de CV Simple',
-        ]);
-    }
+        $tool = $toolRepository->findOneBy(['routeParam' => $routeParam]);
 
-    #[Route('/cover-letter', name: 'app_tool_cover_letter')]
-    public function coverLetter(): Response
-    {
-        return $this->render('tool/index.html.twig', [
-            'tool_name' => 'Générateur de Lettre de Motivation',
-        ]);
-    }
+        if (!$tool) {
+            throw $this->createNotFoundException('This tool does not exist.');
+        }
 
-    #[Route('/cv-design', name: 'app_tool_cv_design')]
-    public function cvDesign(): Response
-    {
+        // Ici, vous pouvez ajouter la logique spécifique pour chaque outil si nécessaire,
+        // ou simplement afficher une page générique.
+        
         return $this->render('tool/index.html.twig', [
-            'tool_name' => 'Générateur de CV Design',
-        ]);
-    }
-
-    #[Route('/annual-report', name: 'app_tool_annual_report')]
-    public function annualReport(): Response
-    {
-        return $this->render('tool/index.html.twig', [
-            'tool_name' => 'Rapport Annuel Automatisé',
+            'tool' => $tool,
         ]);
     }
 }

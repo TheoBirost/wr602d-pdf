@@ -243,35 +243,35 @@
         }
     </style>
     {% block stylesheets %}{% endblock %}
+
+
 </head>
 <body>
-    <nav class="main-nav">
-        <a href="{{ path('homepage') }}" class="logo">PDF-GEN</a>
+<nav class="main-nav">
+    <a href="{{ path('homepage') }}" class="logo">PDF-GEN</a>
 
-        <div class="nav-links">
-            <a href="{{ path('homepage') }}">Accueil</a>
-            {% if app.user %}
-                <a href="{{ path('history') }}">Historique</a>
-            {% endif %}
-            <a href="{{ path('app_subscription') }}">Plan</a>
-            <a href="{{ path('app_contact') }}">Contact</a>
-        </div>
-
-        <div class="auth-buttons">
-            {% if app.user %}
-                <a href="{{ path('app_profile') }}" class="btn btn-primary">{{ app.user.firstname }}</a>
-                <a href="{{ path('app_logout') }}" class="btn btn-outline">Déconnexion</a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="btn btn-outline">Connexion</a>
-                <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
-            {% endif %}
-        </div>
-    </nav>
-
-    <div class="content-container">
-        {% block content %}{% endblock %}
+    <div class="nav-links">
+        <a href="{{ path('homepage') }}">Accueil</a>
+        {% if app.user %}
+            <a href="{{ path('history') }}">Historique</a>
+        {% endif %}
+        <a href="{{ path('subscription_change') }}">Plan</a>
+        <a href="{{ path('app_contact') }}">Contact</a>
     </div>
 
-    {% block javascripts %}{% endblock %}
+    <div class="auth-buttons">
+        {% if app.user %}
+            <a href="{{ path('app_profile') }}" class="btn btn-primary">{{ app.user.firstname }}</a>
+            <a href="{{ path('app_logout') }}" class="btn btn-outline">Déconnexion</a>
+        {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-outline">Connexion</a>
+            <a href="{{ path('app_register') }}" class="btn btn-primary">Inscription</a>
+        {% endif %}
+    </div>
+</nav>
+
+{% block body %}{% endblock %}
+
+{% block javascripts %}{% endblock %}
 </body>
 </html>
