@@ -23,3 +23,4 @@
 .idea/php.xml
 .idea/wr602d.iml
 .env
+.env.local
