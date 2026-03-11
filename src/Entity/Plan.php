@@ -49,6 +49,9 @@ class Plan
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripePriceId = null;
+
     /**
      * @var Collection<int, User>
      */
@@ -68,7 +71,7 @@ class Plan
 
     public function getName(): ?string
     {
-        return $this->name; 
+        return $this->name;
     }
 
     public function setName(string $name): static
@@ -198,6 +201,18 @@ class Plan
         return $this;
     }
 
+    public function getStripePriceId(): ?string
+    {
+        return $this->stripePriceId;
+    }
+
+    public function setStripePriceId(?string $stripePriceId): static
+    {
+        $this->stripePriceId = $stripePriceId;
+
+        return $this;
+    }
+
     /**
      * @return Collection<int, User>
      */
@@ -219,7 +234,6 @@ class Plan
     public function removeUser(User $user): static
     {
         if ($this->users->removeElement($user)) {
-            // set the owning side to null (unless already changed)
             if ($user->getPlan() === $this) {
                 $user->setPlan(null);
             }

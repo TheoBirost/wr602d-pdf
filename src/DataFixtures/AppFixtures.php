@@ -11,12 +11,11 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // --- 1. GESTION DES PLANS ---
         $planData = [
-            'STARTER' => ['price' => 0, 'limit' => 2, 'description' => 'Pour bien démarrer'],
-            'PRO' => ['price' => 19, 'limit' => 25, 'description' => 'Pour les professionnels'],
-            'ELITE' => ['price' => 49, 'limit' => 50, 'description' => 'Pour les utilisateurs exigeants'],
-            'LEGEND' => ['price' => 99, 'limit' => 200, 'description' => 'Accès total et illimité'],
+            'STARTER' => ['price' => 0, 'limit' => 2, 'description' => 'Pour bien démarrer','stripePriceId' => 'price_1T9LTlBbxRtKe5SmHC7ugkFO'],
+            'PRO' => ['price' => 19, 'limit' => 25, 'description' => 'Pour les professionnels','stripePriceId' => 'price_1T9LU5BbxRtKe5SmDViJXp3e'],
+            'ELITE' => ['price' => 49, 'limit' => 50, 'description' => 'Pour les utilisateurs exigeants','stripePriceId' => 'price_1T9LUaBbxRtKe5SmYXFCBoZS'],
+            'LEGEND' => ['price' => 99, 'limit' => 200, 'description' => 'Accès total et illimité','stripePriceId' => 'price_1T9LUuBbxRtKe5SmmmmMlmog'],
         ];
 
         foreach ($planData as $name => $data) {
