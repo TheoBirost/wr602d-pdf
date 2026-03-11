@@ -160,6 +160,7 @@
             box-sizing: border-box;
             font-size: 0.9rem;
             letter-spacing: 1px;
+            text-align: center;
         }
 
         .btn-plan-outline {
@@ -239,10 +240,7 @@
                     {% if app.user and app.user.plan.id == plan.id %}
                         <button class="btn-plan btn-plan-solid" disabled>✓ Selected</button>
                     {% else %}
-                        <form action="{{ path('subscription_change_handle', {'id': plan.id}) }}" method="post" style="margin-top: auto;">
-                            <input type="hidden" name="token" value="{{ csrf_token('change-plan') }}" />
-                            <button type="submit" class="btn-plan btn-plan-outline">Choose plan</button>
-                        </form>
+                        <a href="{{ path('app_payment_checkout', {'id': plan.id}) }}" class="btn-plan btn-plan-outline">Choose plan</a>
                     {% endif %}
                 </div>
             {% endfor %}

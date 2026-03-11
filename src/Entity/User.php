@@ -77,6 +77,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::INTEGER, options: ['default' => 0])]
     private int $generationsUsed = 0;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stripeCustomerId = null;
+
     public function __construct()
     {
         $this->userContacts = new ArrayCollection();
@@ -325,6 +328,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setGenerationsUsed(int $generationsUsed): static
     {
         $this->generationsUsed = $generationsUsed;
+
+        return $this;
+    }
+
+    public function getStripeCustomerId(): ?string
+    {
+        return $this->stripeCustomerId;
+    }
+
+    public function setStripeCustomerId(?string $stripeCustomerId): static
+    {
+        $this->stripeCustomerId = $stripeCustomerId;
 
         return $this;
     }
