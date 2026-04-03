@@ -4,14 +4,13 @@
 FROM php:8.2-fpm-alpine AS symfony_php
 
 # Installer les dépendances système nécessaires
+# Remplacement de postgresql-dev et libpq par des dépendances neutres ou pour MariaDB/MySQL
 RUN apk add --no-cache \
     git \
     curl \
     zip \
     unzip \
     nginx \
-    postgresql-dev \
-    libpq \
     libzip-dev \
     icu-dev \
     libpng-dev \
@@ -29,7 +28,8 @@ RUN apk add --no-cache \
 # Installer les extensions PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
-        pdo_pgsql \
+        pdo_mysql \
+        mysqli \
         zip \
         intl \
         gd \
@@ -38,15 +38,13 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
         bcmath \
         exif \
         mbstring \
-        mysqli \
         openssl \
         pcntl \
-        pdo_mysql \
         soap \
         sockets \
         xml \
         gmp \
-        imagick # Imagick est utile pour la manipulation d'images, souvent liée aux PDF
+        imagick
 
 # Installer Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -67,34 +65,17 @@ RUN php bin/console assets:install --symlink --relative public --env=prod
 # Configurer les permissions
 RUN chown -R www-data:www-data var public
 
-# --- Étape 2: Configuration de Nginx ---
-FROM nginx:alpine AS symfony_nginx
-
-# Copier la configuration Nginx
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-
-# Copier les fichiers statiques de l'application (public)
-COPY --from=symfony_php /app/public /var/www/html/public
-
-# Exposer le port 80
-EXPOSE 80
-
-# --- Étape 3: Image finale (multi-stage build) ---
+# --- Étape 2: Image finale avec Nginx et PHP-FPM ---
 FROM symfony_php
 
-# Copier la configuration Nginx et les fichiers statiques
-COPY --from=symfony_nginx /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=symfony_nginx /var/www/html/public /var/www/html/public
-
-# Configurer PHP-FPM pour écouter sur un port (par défaut 9000)
-# et s'assurer que Nginx peut le joindre.
-# Pour Dokploy, il est courant d'avoir PHP-FPM et Nginx dans le même conteneur ou des conteneurs séparés.
-# Ici, je vais les mettre dans le même conteneur pour simplifier le déploiement sur Dokploy.
+# Créer les répertoires nécessaires pour Nginx
+RUN mkdir -p /run/nginx /var/log/nginx
+RUN chown -R www-data:www-data /var/log/nginx
 
 # Copier la configuration Nginx
 COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
 
-# Créer un script de démarrage pour Nginx et PHP-FPM
+# Copier le script de démarrage
 COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
