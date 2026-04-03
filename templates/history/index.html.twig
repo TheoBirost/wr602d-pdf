@@ -7,12 +7,14 @@
     .history-container {
         max-width: 1200px;
         margin: 2rem auto;
+        padding: 0 1rem;
     }
     .history-title {
         font-size: 2.5rem;
         font-weight: 800;
         margin-bottom: 2rem;
         text-align: center;
+        font-family: var(--font-headings);
     }
     .stats-grid {
         display: grid;
@@ -23,20 +25,23 @@
     .stat-card {
         background-color: #fff;
         padding: 1.5rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border: 3px solid var(--dark-color);
+        box-shadow: 4px 4px 0 var(--dark-color);
         text-align: center;
+        border-radius: 0;
     }
     .stat-value {
         font-size: 2.5rem;
         font-weight: 700;
         color: var(--dark-color);
+        font-family: var(--font-headings);
     }
     .stat-label {
         font-size: 0.9rem;
         font-weight: 500;
         color: #666;
         margin-top: 0.5rem;
+        font-family: var(--font-body);
     }
     .filter-bar {
         display: flex;
@@ -45,37 +50,42 @@
         margin-bottom: 2rem;
     }
     .filter-btn {
-        padding: 0.75rem 1.5rem;
-        border: 2px solid #E2E8F0;
-        border-radius: 50px;
-        background-color: #fff;
-        color: #4A5568;
-        font-weight: 600;
+        padding: 0.7rem 1.6rem;
+        border-radius: 0;
+        font-weight: normal;
+        font-size: 0.9rem;
+        text-transform: uppercase;
         text-decoration: none;
-        transition: all 0.2s;
+        transition: all 0.2s ease;
+        border: 3px solid var(--dark-color);
+        box-shadow: 4px 4px 0 var(--dark-color);
+        background-color: #fff;
+        color: var(--dark-color);
+        font-family: var(--font-headings);
     }
     .filter-btn:hover {
-        background-color: #F8FAFC;
-        border-color: #CBD5E0;
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 var(--dark-color);
     }
     .filter-btn.active {
         background-color: var(--dark-color);
         color: #fff;
-        border-color: var(--dark-color);
     }
     .filter-select {
-        padding: 0.75rem 1.5rem;
-        border: 2px solid #E2E8F0;
-        border-radius: 50px;
-        background-color: #fff;
-        color: #4A5568;
-        font-weight: 600;
+        padding: 0.7rem 1.6rem;
+        border-radius: 0;
+        font-weight: normal;
+        font-size: 0.9rem;
+        text-transform: uppercase;
         text-decoration: none;
-        transition: all 0.2s;
+        border: 3px solid var(--dark-color);
+        background-color: #fff;
+        color: var(--dark-color);
+        font-family: var(--font-headings);
         -webkit-appearance: none;
         -moz-appearance: none;
         appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%234A5568' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231A1A1A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 1rem center;
         padding-right: 3rem;
@@ -84,28 +94,29 @@
         width: 100%;
         border-collapse: collapse;
         background-color: #fff;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        border-radius: 8px;
+        border: 3px solid var(--dark-color);
+        border-radius: 0;
         overflow: hidden;
     }
     .history-table th, .history-table td {
         padding: 1rem 1.5rem;
         text-align: left;
-        border-bottom: 1px solid #E2E8F0;
+        border-bottom: 3px solid var(--dark-color);
         vertical-align: middle;
     }
     .history-table thead {
-        background-color: #F8FAFC;
+        background-color: #fff;
         font-size: 0.85rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        color: #4A5568;
+        color: var(--dark-color);
+        font-family: var(--font-headings);
     }
     .history-table tbody tr:last-child td {
         border-bottom: none;
     }
     .history-table tbody tr:hover {
-        background-color: #F8FAFC;
+        background-color: #f1f1f1;
     }
     .btn-download {
         display: inline-block;
@@ -113,10 +124,11 @@
         background-color: var(--dark-color);
         color: #fff;
         text-decoration: none;
-        border-radius: 5px;
+        border-radius: 0;
         font-weight: 600;
         font-size: 0.9rem;
         transition: background-color 0.2s;
+        border: 2px solid var(--dark-color);
     }
     .btn-download:hover {
         background-color: #000;
@@ -139,8 +151,8 @@
         text-align: center;
         padding: 4rem;
         background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        border: 3px solid var(--dark-color);
+        border-radius: 0;
     }
 </style>
 {% endblock %}
@@ -197,7 +209,7 @@
                         <td>
                             <form action="{{ path('history_toggle_favorite', {'id': generation.id}) }}" method="post">
                                 <input type="hidden" name="token" value="{{ csrf_token('toggle-favorite' ~ generation.id) }}">
-                                <button type="submit" class="btn-favorite {% if generation.isFavorite %}is-favorite{% endif %}">
+                                <button type="submit" class="btn-favorite {% if generation.isFavorite %}is-favorite{% endif %}" aria-label="Toggle Favorite" title="Toggle Favorite">
                                     <i class="{% if generation.isFavorite %}fas fa-heart{% else %}far fa-heart{% endif %}"></i>
                                 </button>
                             </form>
@@ -216,7 +228,7 @@
     {% else %}
         <div class="no-history">
             <p>Vous n'avez pas encore généré de fichier.</p>
-            <a href="{{ path('homepage') }}" class="btn btn-primary" style="padding: 0.6rem 1.5rem; border-radius: 50px;">Commencer à générer</a>
+            <a href="{{ path('homepage') }}" class="btn btn-primary">Commencer à générer</a>
         </div>
     {% endif %}
 </div>

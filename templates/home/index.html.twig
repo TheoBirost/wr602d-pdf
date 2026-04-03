@@ -4,17 +4,11 @@
 
 {% block stylesheets %}
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
         .home-content-container {
             text-align: center;
             padding: 3rem 2rem;
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        * {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
         }
 
         .progress-section {
@@ -42,35 +36,34 @@
             font-size: 0.813rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #4A5568;
+            color: var(--text-color);
         }
 
         .progress-bar {
             width: 100%;
             height: 10px;
             background-color: #E2E8F0;
-            border-radius: 20px;
+            border-radius: 0;
             overflow: hidden;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
+            border: 2px solid var(--dark-color);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--dark-color) 0%, #1a1a1a 100%);
+            background: var(--dark-color);
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
         .plan-info {
             text-align: right;
             font-weight: 600;
-            color: #2D3748;
+            color: var(--text-color);
         }
 
         .plan-info div:last-child {
             font-size: 0.75rem;
             font-weight: 400;
-            color: #718096;
+            color: var(--text-color);
             margin-top: 0.25rem;
         }
 
@@ -79,19 +72,23 @@
             font-weight: 900;
             margin-bottom: 1.5rem;
             letter-spacing: -1px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #4a4a4a 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--dark-color);
             line-height: 1.1;
         }
 
         .subtitle {
             font-size: 1.25rem;
-            margin-bottom: 4rem;
+            margin-bottom: 2rem;
             font-weight: 400;
-            color: #4A5568;
+            color: var(--text-color);
             letter-spacing: 0.3px;
+        }
+
+        .tools-section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: var(--dark-color);
         }
 
         .pdf-options {
@@ -105,46 +102,63 @@
         .pdf-option {
             position: relative;
             background: #FFFFFF;
-            border-radius: 16px;
-            padding: 2.5rem 1.5rem;
+            border-radius: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-            border: 1px solid #EAEAEA;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            transition: all 0.2s ease;
+            border: 3px solid var(--dark-color);
+            box-shadow: 4px 4px 0 var(--dark-color);
+            text-decoration: none;
+            color: var(--text-color);
+            aspect-ratio: 1 / 1;
+            justify-content: center;
         }
 
-        .pdf-option:not(.disabled):hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.07);
-            border-color: #DDDDDD;
+        .pdf-option:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 var(--dark-color);
         }
 
         .pdf-option.disabled {
-            opacity: 0.6;
-            background-color: #f1f1f1;
+            background-color: #f9f9f9;
             cursor: not-allowed;
+            color: #595959;
+            border-color: #595959;
+            box-shadow: 4px 4px 0 #595959;
+        }
+
+        .pdf-option.disabled:hover {
+            transform: none;
+            box-shadow: 4px 4px 0 #595959;
+        }
+
+        .pdf-option.disabled .pdf-option-icon,
+        .pdf-option.disabled .pdf-option-description,
+        .pdf-option.disabled h3 {
+            color: #595959;
         }
 
         .pdf-option-icon {
             font-size: 28px;
             color: var(--dark-color);
             margin-bottom: 1.25rem;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .pdf-option h3 {
             margin: 0 0 0.5rem 0;
             font-size: 1.1rem;
             font-weight: 600;
-            color: #2D3748;
         }
 
         .pdf-option-description {
             font-size: 0.9rem;
-            color: #718096;
             line-height: 1.6;
         }
 
@@ -162,6 +176,7 @@
             font-weight: 800;
             border: 2px solid black;
             text-transform: uppercase;
+            color: #000;
         }
 
         .plan-tag.starter { background-color: #F4E04D; }
@@ -175,12 +190,16 @@
     {% if app.user and app.user.plan %}
         <div class="progress-section">
             <div class="progress-text">Générations disponibles</div>
-            <div class="progress-bar-container">
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: {{ ((app.user.generationsUsed / app.user.plan.limitGeneration) * 100)|round }}%;"></div>
+            {% if app.user.plan.limitGeneration == -1 %}
+                <div style="font-weight: 600; color: #2D3748; flex-grow: 1; text-align: center;">Illimité</div>
+            {% else %}
+                <div class="progress-bar-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: {{ ((app.user.generationsUsed / app.user.plan.limitGeneration) * 100)|round }}%;"></div>
+                    </div>
                 </div>
-            </div>
-            <div style="font-weight: 600; color: #2D3748;">{{ app.user.plan.limitGeneration - app.user.generationsUsed }} / {{ app.user.plan.limitGeneration }} restants</div>
+                <div style="font-weight: 600; color: #2D3748;">{{ app.user.plan.limitGeneration - app.user.generationsUsed }} / {{ app.user.plan.limitGeneration }} restants</div>
+            {% endif %}
             <div class="plan-info">
                 <div>Plan actuel : {{ app.user.plan.name|upper }}</div>
             </div>
@@ -191,10 +210,13 @@
         <h1 class="main-title">CONVERTISSEUR PDF</h1>
         <p class="subtitle">Convertissez et modifiez instantanément tout type de document !</p>
 
+        <h2 class="tools-section-title">Nos Outils</h2>
         <div class="pdf-options" id="options-container">
             {% for tool in tools %}
                 {% set has_access = app.user and can_user_use_tool(app.user, tool) %}
-                <div class="pdf-option {% if not has_access %}disabled{% endif %}" id="tool-card-{{ tool.routeParam }}" onclick="loadTool('{{ tool.routeParam }}', {{ has_access ? 'true' : 'false' }})">
+                {% set tool_path = has_access ? path('app_tool_show', {'routeParam': tool.routeParam}) : path('subscription_change') %}
+
+                <a href="{{ tool_path }}" class="pdf-option {% if not has_access %}disabled{% endif %}" id="tool-card-{{ tool.routeParam }}">
                     <div class="pdf-option-plans">
                         {% if tool.plans is not empty %}
                             <span class="plan-tag {{ tool.plans[0]|lower }}">{{ tool.plans[0] }}</span>
@@ -205,27 +227,10 @@
                     </div>
                     <h3>{{ tool.name }}</h3>
                     <p class="pdf-option-description">{{ tool.description }}</p>
-                </div>
+                </a>
             {% endfor %}
         </div>
     </div>
 {% endblock %}
 
-{% block javascripts %}
-    <script>
-        function loadTool(routeParam, hasAccess) {
-            if (!hasAccess) {
-                window.location.href = '{{ path('subscription_change') }}';
-                return;
-            }
-
-            const pdfConverterRoutes = ['url', 'html_raw', 'markdown', 'docx', 'xlsx', 'image', 'merge', 'screenshot'];
-
-            if (pdfConverterRoutes.includes(routeParam)) {
-                window.location.href = '/pdf/generate/' + routeParam;
-            } else {
-                window.location.href = '/tool/' + routeParam;
-            }
-        }
-    </script>
-{% endblock %}
+{% block javascripts %}{% endblock %}

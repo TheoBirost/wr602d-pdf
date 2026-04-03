@@ -11,57 +11,54 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+        // --- 1. GESTION DES PLANS ---
         $planData = [
-            'STARTER' => ['price' => 0, 'limit' => 2, 'description' => 'Pour bien démarrer','stripePriceId' => 'price_1T9LTlBbxRtKe5SmHC7ugkFO'],
-            'PRO' => ['price' => 19, 'limit' => 25, 'description' => 'Pour les professionnels','stripePriceId' => 'price_1T9LU5BbxRtKe5SmDViJXp3e'],
-            'ELITE' => ['price' => 49, 'limit' => 50, 'description' => 'Pour les utilisateurs exigeants','stripePriceId' => 'price_1T9LUaBbxRtKe5SmYXFCBoZS'],
-            'LEGEND' => ['price' => 99, 'limit' => 200, 'description' => 'Accès total et illimité','stripePriceId' => 'price_1T9LUuBbxRtKe5SmmmmMlmog'],
+            'STARTER' => ['price' => 0, 'limit' => 5, 'description' => 'Idéal pour découvrir et pour les besoins occasionnels.', 'stripePriceId' => 'price_1T9LTlBbxRtKe5SmHC7ugkFO'],
+            'PRO' => ['price' => 19, 'limit' => 50, 'description' => 'Parfait pour les professionnels et les usages réguliers.', 'stripePriceId' => 'price_1T9LU5BbxRtKe5SmDViJXp3e'],
+            'ELITE' => ['price' => 49, 'limit' => 200, 'description' => 'La solution complète pour les utilisateurs intensifs.', 'stripePriceId' => 'price_1T9LUaBbxRtKe5SmYXFCBoZS'],
+            'LEGEND' => ['price' => 99, 'limit' => -1, 'description' => 'Accès total et sans limites pour une puissance maximale.', 'stripePriceId' => 'price_1T9LUuBbxRtKe5SmmmmMlmog'],
         ];
 
         foreach ($planData as $name => $data) {
-            $plan = $manager->getRepository(Plan::class)->findOneBy(['name' => $name]);
-            if (!$plan) {
-                $plan = new Plan();
-                $plan->setName($name);
-                $plan->setPrice($data['price']);
-                $plan->setLimitGeneration($data['limit']);
-                $plan->setDescription($data['description']);
-                $plan->setActive(true);
-                $manager->persist($plan);
-            }
+            $plan = $manager->getRepository(Plan::class)->findOneBy(['name' => $name]) ?? new Plan();
+            $plan->setName($name);
+            $plan->setPrice($data['price']);
+            $plan->setLimitGeneration($data['limit']);
+            $plan->setDescription($data['description']);
+            $plan->setActive(true);
+            $manager->persist($plan);
         }
         $manager->flush();
 
         // --- 2. GESTION DES OUTILS ---
-        // Liste complète de TOUS les outils que vous voulez
         $toolsData = [
-            // Anciens outils
-            ['name' => 'Générateur de CV Simple', 'route' => 'cv-simple', 'logo' => '<i class="fa-solid fa-id-card"></i>', 'plan' => 'STARTER', 'description' => 'Créez un CV simple et efficace.'],
-            ['name' => 'Générateur de Lettre de Motivation', 'route' => 'cover-letter', 'logo' => '<i class="fa-solid fa-file-signature"></i>', 'plan' => 'STARTER', 'description' => 'Générez une lettre de motivation percutante.'],
-            ['name' => 'Générateur de CV Design', 'route' => 'cv-design', 'logo' => '<i class="fa-solid fa-palette"></i>', 'plan' => 'PRO', 'description' => 'Concevez un CV au design moderne.'],
-            ['name' => 'Rapport Annuel Automatisé', 'route' => 'annual-report', 'logo' => '<i class="fa-solid fa-chart-line"></i>', 'plan' => 'ELITE', 'description' => 'Automatisez la création de vos rapports annuels.'],
-            
-            // Outils Gotenberg
-            ['name' => 'URL to PDF', 'route' => 'url', 'logo' => '<i class="fa-solid fa-link"></i>', 'plan' => 'STARTER', 'description' => 'Convertissez une page web en PDF.'],
-            ['name' => 'HTML to PDF', 'route' => 'html_raw', 'logo' => '<i class="fa-solid fa-code"></i>', 'plan' => 'STARTER', 'description' => 'Transformez du code HTML en PDF.'],
-            ['name' => 'Markdown to PDF', 'route' => 'markdown', 'logo' => '<i class="fa-brands fa-markdown"></i>', 'plan' => 'PRO', 'description' => 'Convertissez vos fichiers Markdown en PDF.'],
-            ['name' => 'Office to PDF', 'route' => 'docx', 'logo' => '<i class="fa-solid fa-file-word"></i>', 'plan' => 'PRO', 'description' => 'Convertissez des documents Office (Word, Excel) en PDF.'],
-            ['name' => 'Merge PDF', 'route' => 'merge', 'logo' => '<i class="fa-solid fa-object-group"></i>', 'plan' => 'ELITE', 'description' => 'Fusionnez plusieurs fichiers PDF en un seul.'],
-            ['name' => 'Screenshot Page', 'route' => 'screenshot', 'logo' => '<i class="fa-solid fa-camera"></i>', 'plan' => 'ELITE', 'description' => 'Prenez une capture d\'écran d\'une page web.'],
+            ['name' => 'URL vers PDF', 'route' => 'url-to-pdf', 'logo' => '<i class="fas fa-link"></i>', 'plan' => 'STARTER', 'description' => 'Convertissez une page web en PDF.'],
+            ['name' => 'HTML vers PDF', 'route' => 'html-to-pdf', 'logo' => '<i class="fab fa-html5"></i>', 'plan' => 'PRO', 'description' => 'Transformez un fichier HTML en PDF.'],
+            ['name' => 'Markdown vers PDF', 'route' => 'markdown-to-pdf', 'logo' => '<i class="fab fa-markdown"></i>', 'plan' => 'PRO', 'description' => 'Convertissez vos fichiers Markdown en PDF.'],
+            ['name' => 'Documents Office vers PDF', 'route' => 'office-to-pdf', 'logo' => '<i class="fas fa-file-word"></i>', 'plan' => 'PRO', 'description' => 'Convertissez des documents Office en PDF.'],
+            ['name' => 'Fusionner des PDF', 'route' => 'merge-pdf', 'logo' => '<i class="fas fa-compress-arrows-alt"></i>', 'plan' => 'ELITE', 'description' => 'Fusionnez plusieurs fichiers PDF en un seul.'],
+            ['name' => 'Diviser un PDF', 'route' => 'split-pdf', 'logo' => '<i class="fas fa-cut"></i>', 'plan' => 'ELITE', 'description' => 'Extrayez une ou plusieurs pages d\'un PDF.'],
+            ['name' => 'Screenshot d\'une URL', 'route' => 'screenshot-url', 'logo' => '<i class="fas fa-camera"></i>', 'plan' => 'PRO', 'description' => 'Prenez une capture d\'écran d\'une page web.'],
+            ['name' => 'Screenshot de HTML', 'route' => 'screenshot-html', 'logo' => '<i class="fas fa-file-image"></i>', 'plan' => 'ELITE', 'description' => 'Prenez une capture d\'écran d\'un fichier HTML.'],
+            ['name' => 'Screenshot de Markdown', 'route' => 'screenshot-markdown', 'logo' => '<i class="fas fa-camera-retro"></i>', 'plan' => 'ELITE', 'description' => 'Prenez une capture d\'écran de texte Markdown.'],
         ];
 
         $planHierarchy = ['STARTER', 'PRO', 'ELITE', 'LEGEND'];
 
-        foreach ($toolsData as $toolData) {
-            $tool = $manager->getRepository(Tool::class)->findOneBy(['routeParam' => $toolData['route']]);
-            
-            if (!$tool) {
-                $tool = new Tool();
-                $tool->setName($toolData['name']);
-                $tool->setRouteParam($toolData['route']);
+        // Supprimer les outils qui ne sont plus dans la liste
+        $allTools = $manager->getRepository(Tool::class)->findAll();
+        $toolsToKeep = array_column($toolsData, 'route');
+        foreach ($allTools as $tool) {
+            if (!in_array($tool->getRouteParam(), $toolsToKeep)) {
+                $manager->remove($tool);
             }
+        }
+
+        foreach ($toolsData as $toolData) {
+            $tool = $manager->getRepository(Tool::class)->findOneBy(['routeParam' => $toolData['route']]) ?? new Tool();
             
-            // On met à jour la description, le logo et les plans dans tous les cas
+            $tool->setName($toolData['name']);
+            $tool->setRouteParam($toolData['route']);
             $tool->setDescription($toolData['description']);
             $tool->setLogo($toolData['logo']);
 

@@ -1,27 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="PDF-GEN is a powerful online tool to convert, edit, and generate PDF documents instantly.">
+    <meta name="robots" content="index, follow">
     <title>{% block title %}PDF-GEN{% endblock %}</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@400;500;600;700&display=swap"></noscript>
     <style>
         :root {
             --bg-color: #E8D4B8;
             --dark-color: #1A1A1A;
             --text-color: #1A1A1A;
             --accent-color: #2C2C2C;
+            --font-headings: 'Lilita One', cursive;
+            --font-body: 'Nunito', sans-serif;
         }
 
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: var(--font-body);
             -webkit-font-smoothing: antialiased;
+        }
+
+        h1, h2, h3, h4, h5, h6, .logo, .main-nav .nav-links a, .btn {
+            font-family: var(--font-headings);
+            letter-spacing: 0.5px;
         }
 
         .main-nav {
@@ -30,14 +38,13 @@
             align-items: center;
             padding: 1.25rem 3rem;
             background-color: var(--bg-color);
-            border-bottom: 1px solid #000000; /* Black border as requested */
+            border-bottom: 3px solid #000000; /* Bordure plus épaisse */
         }
 
         .main-nav .logo {
-            font-weight: 800;
-            font-size: 1.5rem;
+            font-weight: normal;
+            font-size: 1.8rem;
             color: var(--text-color);
-            letter-spacing: -0.5px;
             text-decoration: none;
         }
 
@@ -50,31 +57,11 @@
         .main-nav .nav-links a {
             color: var(--text-color);
             text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            letter-spacing: 0.5px;
+            font-weight: normal;
+            font-size: 1rem;
             text-transform: uppercase;
             transition: opacity 0.2s ease;
             position: relative;
-        }
-
-        .main-nav .nav-links a:not(.btn):hover {
-            opacity: 0.7;
-        }
-
-        .main-nav .nav-links a:not(.btn)::after {
-            content: '';
-            position: absolute;
-            width: 0;
-            height: 2px;
-            bottom: -4px;
-            left: 0;
-            background-color: var(--dark-color);
-            transition: width 0.3s ease;
-        }
-
-        .main-nav .nav-links a:not(.btn):hover::after {
-            width: 100%;
         }
 
         .auth-buttons {
@@ -84,38 +71,40 @@
         }
 
         .btn {
-            padding: 0.6rem 1.5rem;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.85rem;
+            padding: 0.7rem 1.6rem;
+            border-radius: 0; /* Carré */
+            font-weight: normal;
+            font-size: 0.9rem;
             text-transform: uppercase;
             text-decoration: none;
             transition: all 0.2s ease;
-            letter-spacing: 0.5px;
+            border: 3px solid var(--dark-color);
+            box-shadow: 4px 4px 0 var(--dark-color); /* Ombre nette */
+        }
+
+        .btn:hover {
+            transform: translate(-2px, -2px); /* Léger décalage au survol */
+            box-shadow: 8px 8px 0 var(--dark-color); /* Ombre plus prononcée */
         }
 
         .btn-outline {
-            border: 2px solid var(--dark-color);
             color: var(--dark-color);
             background: transparent;
         }
 
         .btn-outline:hover {
-            background-color: rgba(0,0,0,0.05);
-            transform: translateY(-1px);
+            background-color: var(--dark-color);
+            color: #fff;
         }
 
         .btn-primary {
             background-color: var(--dark-color);
             color: #FFFFFF;
-            border: 2px solid var(--dark-color);
         }
 
         .btn-primary:hover {
             background-color: #000000;
             border-color: #000000;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .content-container {
@@ -124,132 +113,100 @@
             margin: 0 auto;
         }
 
-        /* Auth Form Specific Styles */
+        /* --- Styles pour les formulaires d'authentification et de contact --- */
         .auth-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: calc(100vh - 150px); /* Adjust based on your nav height */
+            min-height: calc(100vh - 200px);
             padding: 2rem;
-            box-sizing: border-box;
         }
 
         .auth-form-card {
             background-color: #FFFFFF;
-            padding: 3rem 2.5rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            padding: 2.5rem;
+            border: 3px solid #000;
+            box-shadow: 8px 8px 0 #000; /* Ombre nette */
             width: 100%;
             max-width: 450px;
             text-align: center;
-            border: 1px solid #EAEAEA;
+            border-radius: 0; /* Carré */
         }
 
         .auth-form-card h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 1.5rem;
+            font-family: var(--font-headings);
+            font-size: 2.8rem;
+            font-weight: normal;
+            margin-bottom: 2rem;
             color: var(--dark-color);
         }
 
-        .auth-form-card label {
-            display: block;
+        .auth-form-card .form-group {
+            margin-bottom: 1.5rem;
             text-align: left;
+        }
+
+        .auth-form-card label {
+            font-family: var(--font-headings);
+            font-size: 1.1rem;
+            display: block;
             margin-bottom: 0.5rem;
-            font-weight: 600;
             color: #4A5568;
-            font-size: 0.9rem;
         }
 
         .auth-form-card input[type="text"],
         .auth-form-card input[type="email"],
-        .auth-form-card input[type="password"] {
+        .auth-form-card input[type="password"],
+        .auth-form-card textarea {
+            font-family: var(--font-body);
             width: 100%;
             padding: 0.8rem 1rem;
-            margin-bottom: 1.5rem;
-            border: 1px solid #CBD5E0;
-            border-radius: 8px;
+            border: 2px solid #000;
+            border-radius: 0; /* Carré */
             font-size: 1rem;
             color: var(--dark-color);
             box-sizing: border-box;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .auth-form-card input[type="text"]:focus,
-        .auth-form-card input[type="email"]:focus,
-        .auth-form-card input[type="password"]:focus {
-            border-color: var(--dark-color);
-            box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.1);
-            outline: none;
+        .auth-form-card textarea {
+            min-height: 150px;
         }
 
         .auth-form-card button[type="submit"] {
+            font-family: var(--font-headings);
             width: 100%;
-            padding: 0.9rem 1.5rem;
+            padding: 1rem 1.5rem;
             background-color: var(--dark-color);
             color: #FFFFFF;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 700;
+            border: 3px solid var(--dark-color);
+            border-radius: 0; /* Carré */
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.2s ease;
+            transition: background-color 0.2s ease;
+            box-shadow: 4px 4px 0 var(--dark-color); /* Ombre nette */
         }
 
         .auth-form-card button[type="submit"]:hover {
             background-color: #000000;
-            transform: translateY(-2px);
+            transform: translate(-2px, -2px); /* Léger décalage au survol */
+            box-shadow: 8px 8px 0 #000000; /* Ombre plus prononcée */
         }
 
-        .auth-form-card .error-message {
-            color: #E53E3E;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
-            text-align: left;
-        }
-
-        /* Responsive Styles */
         @media (max-width: 768px) {
             .main-nav {
                 flex-direction: column;
                 gap: 1.5rem;
                 padding: 1.5rem;
             }
-
-            .main-nav .nav-links {
-                flex-direction: column;
-                gap: 1rem;
-                width: 100%;
-                text-align: center;
-            }
-
-            .auth-buttons {
-                width: 100%;
-                justify-content: center;
-                margin-top: 0.5rem;
-            }
-
-            .content-container {
-                padding: 2rem 1rem;
-            }
-
-            .auth-container {
-                padding: 1rem;
-            }
-
-            .auth-form-card {
-                padding: 2rem 1.5rem;
-            }
+            .auth-container { padding: 1rem; }
+            .auth-form-card { padding: 2rem 1.5rem; }
         }
     </style>
     {% block stylesheets %}{% endblock %}
-
-
 </head>
 <body>
 <nav class="main-nav">
     <a href="{{ path('homepage') }}" class="logo">PDF-GEN</a>
-
     <div class="nav-links">
         <a href="{{ path('homepage') }}">Accueil</a>
         {% if app.user %}
@@ -258,7 +215,6 @@
         <a href="{{ path('subscription_change') }}">Plan</a>
         <a href="{{ path('app_contact') }}">Contact</a>
     </div>
-
     <div class="auth-buttons">
         {% if app.user %}
             <a href="{{ path('app_profile') }}" class="btn btn-primary">{{ app.user.firstname }}</a>
@@ -270,7 +226,9 @@
     </div>
 </nav>
 
-{% block body %}{% endblock %}
+<main>
+    {% block body %}{% endblock %}
+</main>
 
 {% block javascripts %}{% endblock %}
 </body>
