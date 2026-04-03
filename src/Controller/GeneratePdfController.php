@@ -113,7 +113,7 @@ class GeneratePdfController extends AbstractController
                     case 'html_file':
                         $file = $data['html_file'];
                         $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-                        $result = $this->pdfService->generatePdfFromHtml(file_get_contents($file->getPathname()));
+                        $result = $this->pdfService->generatePdfFromHtml(null, $file);
                         break;
                     case 'html_raw':
                         $result = $this->pdfService->generatePdfFromHtml($data['html_content']);
