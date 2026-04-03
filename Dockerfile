@@ -16,13 +16,11 @@ RUN apk add --no-cache \
     libsodium-dev \
     nodejs npm
 
-# Installer les extensions PHP natives
+# Installer les extensions PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp
 RUN docker-php-ext-install -j$(nproc) \
     pdo_mysql mysqli zip intl gd opcache sodium bcmath exif \
     mbstring openssl pcntl soap sockets xml gmp
-
-# Installer l'extension Imagick via PECL
 RUN pecl install imagick
 RUN docker-php-ext-enable imagick
 
