@@ -1,7 +1,5 @@
 #!/bin/sh
+set -e
 
-# Démarrer PHP-FPM en arrière-plan
-php-fpm -D
-
-# Démarrer Nginx en avant-plan
-nginx -g "daemon off;"
+# Démarrer Supervisor, qui gère Nginx et PHP-FPM
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/app.conf
