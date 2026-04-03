@@ -3,90 +3,91 @@
 {% block title %}{{ tool.name }}{% endblock %}
 
 {% block stylesheets %}
-<style>
-    .tool-container {
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 2rem;
-        background-color: #fff;
-        border: 1px solid #EAEAEA;
-        border-radius: 16px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.05);
-        text-align: center;
-    }
-    .tool-icon {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        color: var(--dark-color);
-    }
-    .tool-title {
-        font-size: 2.5rem;
-        font-weight: 800;
-        margin-bottom: 1rem;
-    }
-    .tool-description {
-        font-size: 1.1rem;
-        color: #718096;
-        margin-bottom: 2rem;
-    }
-    .tool-content {
-        margin-top: 2rem;
-        padding-top: 2rem;
-        border-top: 1px solid #E2E8F0;
-        text-align: left;
-    }
-    .generated-cv-prompt {
-        background-color: #f8f9fa;
-        border: 1px solid #e9ecef;
-        padding: 1rem;
-        border-radius: 8px;
-        white-space: pre-wrap; /* Pour préserver les retours à la ligne et les espaces */
-        font-family: monospace;
-        text-align: left;
-    }
-
-    /* --- Styles pour le formulaire --- */
-    .tool-content form > div {
-        margin-bottom: 1.5rem;
-    }
-    .tool-content form label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-        color: #2d3748;
-    }
-    .tool-content form input[type="text"],
-    .tool-content form textarea {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 1px solid #cbd5e0;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-    .tool-content form input[type="text"]:focus,
-    .tool-content form textarea:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.2);
-    }
-    .tool-content form button[type="submit"] {
-        display: inline-block;
-        width: 100%;
-        padding: 1rem;
-        background-color: var(--primary-color);
-        color: white;
-        font-size: 1.1rem;
-        font-weight: 700;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-    .tool-content form button[type="submit"]:hover {
-        background-color: var(--dark-color);
-    }
-</style>
+    <style>
+        .tool-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border: 3px solid #000;
+            border-radius: 0; /* Carré */
+            box-shadow: 8px 8px 0 #000; /* Ombre nette */
+            text-align: center;
+        }
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        .tool-title {
+            font-family: var(--font-headings);
+            font-size: 3rem;
+            font-weight: normal;
+            margin-bottom: 1rem;
+        }
+        .tool-description {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+        .tool-content {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 3px solid #000; /* Bordure plus épaisse */
+            text-align: left;
+        }
+        /* Styles de formulaire génériques */
+        .tool-content form > div {
+            margin-bottom: 1.5rem;
+        }
+        .tool-content form label {
+            display: block;
+            font-family: var(--font-headings);
+            font-weight: normal;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+        .tool-content form input[type="text"],
+        .tool-content form input[type="url"],
+        .tool-content form textarea,
+        .tool-content form input[type="file"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #000;
+            border-radius: 0; /* Carré */
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        .tool-content form textarea {
+            resize: vertical;
+            min-height: 250px;
+        }
+        .tool-content form button[type="submit"] {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            font-family: var(--font-headings);
+            font-size: 1.2rem;
+            font-weight: normal;
+            border: 3px solid var(--dark-color);
+            border-radius: 0; /* Carré */
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+            box-shadow: 4px 4px 0 var(--dark-color); /* Ombre nette */
+        }
+        .tool-content form button[type="submit"]:hover {
+            background-color: #000000;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 #000000;
+        }
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -99,19 +100,19 @@
             <p class="tool-description">{{ tool.description }}</p>
 
             <div class="tool-content">
-                {% if tool.routeParam == 'cv-simple' %}
-                    {{ form(form) }}
+                {% if form is defined %}
+                    {#
+                    This defines an array of potential template names.
+                    The include() function will try each one in order until it finds one that exists.
+                    #}
+                    {% set templates_to_try = [
+                        'tool/' ~ tool.routeParam ~ '.html.twig',
+                        'tool/' ~ (tool.routeParam|replace({'-': '_'})) ~ '.html.twig'
+                    ] %}
 
-                    {% if cv_content is defined and cv_content is not null %}
-                        <h2 style="margin-top: 2rem;">Prompt Généré pour votre CV</h2>
-                        <div class="generated-cv-prompt">
-                            {{ cv_content|raw }} {# Affiche le contenu brut du prompt #}
-                        </div>
-                        <p style="text-align: center; margin-top: 1rem;">Copiez ce texte et collez-le dans votre outil d'IA préféré pour générer votre CV !</p>
-                    {% endif %}
+                    {{ include(templates_to_try, {form: form}, with_context=false, ignore_missing=true) }}
                 {% else %}
-                    <p>Le formulaire et la logique pour l'outil "<strong>{{ tool.name }}</strong>" sont en cours de construction.</p>
-                    <p>Vous pouvez commencer à développer cette fonctionnalité ici : <code>templates/tool/index.html.twig</code></p>
+                    <p>Le formulaire pour l'outil "<strong>{{ tool.name }}</strong>" est en cours de construction.</p>
                 {% endif %}
             </div>
         </div>
