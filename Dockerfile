@@ -13,6 +13,7 @@ RUN apk add --no-cache \
     # Dépendances d'exécution nécessaires pour les extensions
     libzip-dev icu-dev libpng-dev libjpeg-turbo-dev freetype-dev \
     oniguruma-dev gmp-dev libxml2-dev imagemagick-dev libwebp-dev \
+    libsodium-dev \
     nodejs npm
 
 # Installer les extensions PHP
@@ -49,7 +50,7 @@ FROM php:8.2-fpm-alpine
 RUN apk add --no-cache \
     nginx \
     libzip icu-libs libpng libjpeg-turbo freetype oniguruma gmp libxml2 \
-    imagemagick libwebp
+    imagemagick libwebp libsodium
 
 # Copier les extensions PHP depuis l'étape de build
 COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
