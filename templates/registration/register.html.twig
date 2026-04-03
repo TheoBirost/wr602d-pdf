@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .split-container {
+            display: flex;
+            min-height: calc(100vh - 75px); /* Hauteur de la navbar */
+        }
+        .split-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5e6c8;
+            padding: 2rem;
+        }
+        .split-left img {
+            max-width: 80%;
+            height: auto;
+        }
+        .split-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="split-container">
+        <div class="split-left">
+            {# Vous pouvez changer cette image pour qu'elle soit plus en lien avec l'inscription #}
+            <img src="{{ asset('images/welcome-illustration.png') }}" alt="Illustration d'inscription">
+        </div>
+        <div class="split-right">
+            <div class="auth-form-card">
+                <h1>Inscription</h1>
+
+                {{ form_start(registrationForm) }}
+                    <div class="form-group">
+                        {{ form_label(registrationForm.firstname) }}
+                        {{ form_widget(registrationForm.firstname) }}
+                        {{ form_errors(registrationForm.firstname) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(registrationForm.lastname) }}
+                        {{ form_widget(registrationForm.lastname) }}
+                        {{ form_errors(registrationForm.lastname) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(registrationForm.email) }}
+                        {{ form_widget(registrationForm.email) }}
+                        {{ form_errors(registrationForm.email) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_label(registrationForm.plainPassword, 'Mot de passe') }}
+                        {{ form_widget(registrationForm.plainPassword) }}
+                        {{ form_errors(registrationForm.plainPassword) }}
+                    </div>
+
+                    {# Vous pouvez ajouter d'autres champs ici si nécessaire #}
+
+                    <div class="form-group">
+                        {{ form_widget(registrationForm.agreeTerms) }}
+                        <label for="{{ registrationForm.agreeTerms.vars.id }}">J'accepte les termes et conditions</label>
+                        {{ form_errors(registrationForm.agreeTerms) }}
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Créer mon compte</button>
+                {{ form_end(registrationForm) }}
+
+                <div style="text-align: center; margin-top: 1.5rem; font-family: var(--font-body);">
+                    <p>Déjà un compte ? <a href="{{ path('app_login') }}" style="color: var(--dark-color); font-weight: 700;">Connectez-vous</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

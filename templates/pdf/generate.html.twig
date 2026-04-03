@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Générer PDF - {{ tool.name }}{% endblock %}
+
+{% block body %}
+    <div class="content-container" style="max-width: 800px; margin: 2rem auto;">
+        {% include 'pdf/_form.html.twig' with {'form': form, 'type': type, 'tool': tool} %}
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = "{{ path('homepage') }}";
+        }
+    </script>
+{% endblock %}

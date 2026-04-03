@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PDF Converters{% endblock %}
+
+{% block body %}
+    <style>
+        .converter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .converter-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: opacity 0.3s ease, background-color 0.3s ease;
+        }
+        .converter-card h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .converter-card p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+            flex-grow: 1;
+        }
+        .converter-card .btn-use {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .converter-card .btn-use:hover {
+            background-color: #0056b3;
+        }
+        .converter-card.disabled {
+            background-color: #f1f1f1;
+            opacity: 0.6;
+        }
+        .converter-card.disabled .btn-use {
+            background-color: #6c757d;
+            cursor: pointer;
+        }
+    </style>
+
+    <h1>Choose a PDF Converter</h1>
+
+    <div class="converter-grid">
+        {% for tool in tools %}
+            {% set has_access = app.user and can_user_use_tool(app.user, tool) %}
+            <div class="converter-card {% if not has_access %}disabled{% endif %}">
+                <h3>{{ tool.name }}</h3>
+                <p>{{ tool.description }}</p>
+                {% if has_access %}
+                    <a href="{{ path('pdf_generation', {'type': tool.routeParam}) }}" class="btn-use">Use Converter</a>
+                {% else %}
+                    <a href="{{ path('subscription_change') }}" class="btn-use">Upgrade Plan</a>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

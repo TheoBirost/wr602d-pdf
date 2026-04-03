@@ -1,0 +1,194 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Profil{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .profile-page-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+
+    /* --- User Info Card --- */
+    .profile-info-card {
+        background-color: var(--bg-color);
+        border: 3px solid var(--dark-color);
+        box-shadow: 8px 8px 0 var(--dark-color);
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .profile-picture-wrapper {
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 3px solid var(--dark-color);
+    }
+
+    .profile-initials {
+        width: 150px;
+        height: 150px;
+        background-color: #fff;
+        border: 3px solid var(--dark-color);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .profile-initials span {
+        font-family: var(--font-headings);
+        font-size: 4rem;
+        color: var(--dark-color);
+    }
+
+    .profile-name {
+        font-family: var(--font-headings);
+        font-size: 2rem;
+        margin: 0;
+        word-wrap: break-word;
+    }
+
+    .profile-email {
+        font-family: var(--font-body);
+        font-size: 1rem;
+        color: var(--text-color);
+        margin-top: 0.5rem;
+        word-wrap: break-word;
+    }
+
+    /* --- Form Card --- */
+    .profile-form-card {
+        background-color: #fff;
+        border: 3px solid var(--dark-color);
+        box-shadow: 8px 8px 0 var(--dark-color);
+        padding: 2rem;
+    }
+
+    .profile-form-card h1 {
+        font-family: var(--font-headings);
+        font-size: 2.5rem;
+        margin-top: 0;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .profile-form-card .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-form-card label {
+        font-family: var(--font-headings);
+        font-size: 1.2rem;
+        display: block;
+        margin-bottom: 0.75rem;
+        color: var(--text-color);
+    }
+
+    .profile-form-card input[type="text"],
+    .profile-form-card input[type="date"],
+    .profile-form-card input[type="color"],
+    .profile-form-card input[type="file"],
+    .profile-form-card select {
+        font-family: var(--font-body);
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 3px solid var(--dark-color);
+        border-radius: 0;
+        font-size: 1rem;
+        color: var(--dark-color);
+        box-sizing: border-box;
+        background-color: #fff;
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    .profile-form-card input:focus {
+        outline: none;
+        box-shadow: 4px 4px 0 var(--dark-color);
+    }
+
+    .profile-form-card button[type="submit"] {
+        font-family: var(--font-headings);
+        width: 100%;
+        padding: 1rem 1.5rem;
+        background-color: var(--dark-color);
+        color: #FFFFFF;
+        border: 3px solid var(--dark-color);
+        border-radius: 0;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 4px 4px 0 var(--dark-color);
+        margin-top: 1rem;
+    }
+
+    .profile-form-card button[type="submit"]:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 var(--dark-color);
+    }
+
+    @media (max-width: 992px) {
+        .profile-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="profile-page-container">
+    <div class="profile-grid">
+        <div class="profile-info-card">
+            <div class="profile-picture-wrapper">
+                {% if app.user.photo %}
+                    <img src="{{ asset('uploads/photos/' ~ app.user.photo) }}" alt="Photo de profil" class="profile-picture" width="150" height="150">
+                {% else %}
+                    <div class="profile-initials">
+                        <span>{{ app.user.firstname|first|upper }}</span>
+                    </div>
+                {% endif %}
+            </div>
+            <h2 class="profile-name">{{ app.user.firstname }} {{ app.user.lastname }}</h2>
+            <p class="profile-email">{{ app.user.email }}</p>
+        </div>
+
+        <div class="profile-form-card">
+            <h1>Modifier le Profil</h1>
+            {{ form_start(profileForm) }}
+                <div class="form-group">
+                    {{ form_label(profileForm.phone) }}
+                    {{ form_widget(profileForm.phone) }}
+                    {{ form_errors(profileForm.phone) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(profileForm.dob) }}
+                    {{ form_widget(profileForm.dob) }}
+                    {{ form_errors(profileForm.dob) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(profileForm.favoriteColor) }}
+                    {{ form_widget(profileForm.favoriteColor) }}
+                    {{ form_errors(profileForm.favoriteColor) }}
+                </div>
+                <div class="form-group">
+                    {{ form_label(profileForm.photo) }}
+                    {{ form_widget(profileForm.photo) }}
+                    {{ form_errors(profileForm.photo) }}
+                </div>
+                {{ form_widget(profileForm.save) }}
+            {{ form_end(profileForm) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

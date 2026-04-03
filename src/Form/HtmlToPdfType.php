@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Form;
+
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
+
+class HtmlToPdfType extends AbstractType
+{
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('file', FileType::class, [
+                'label' => 'Fichier HTML à convertir',
+                'required' => true,
+                'attr' => ['accept' => '.html'],
+                'constraints' => [
+                    new File([
+                        'maxSize' => '5120k',
+                        'mimeTypes' => ['text/html'],
+                        'mimeTypesMessage' => 'Veuillez sélectionner un fichier HTML valide.',
+                    ])
+                ]
+            ])
+            ->add('submit', SubmitType::class, ['label' => 'Convertir en PDF']);
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([]);
+    }
+}

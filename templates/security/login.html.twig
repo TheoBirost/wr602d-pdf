@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .split-container {
+            display: flex;
+            min-height: calc(100vh - 75px); /* Hauteur de la navbar */
+        }
+        .split-left {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5e6c8;
+            padding: 2rem;
+        }
+        .split-left img {
+            max-width: 80%;
+            height: auto;
+        }
+        .split-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="split-container">
+        <div class="split-left">
+            {# Vous pouvez changer cette image pour qu'elle soit plus en lien avec la connexion #}
+            <img src="{{ asset('images/welcome-illustration.png') }}" alt="Illustration de connexion">
+        </div>
+        <div class="split-right">
+            <div class="auth-form-card">
+                <h1>Connexion</h1>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                {% endif %}
+
+                <form action="{{ path('app_login_check') }}" method="post">
+                    <div class="form-group">
+                        <label for="username">Email</label>
+                        <input type="email" id="username" name="_username" value="{{ last_username }}" required autofocus>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Mot de passe</label>
+                        <input type="password" id="password" name="_password" required>
+                    </div>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                    <button type="submit" class="btn btn-primary w-100">Se connecter</button>
+                </form>
+
+                <div style="text-align: center; margin-top: 1.5rem; font-family: var(--font-body);">
+                    <p>Pas encore de compte ? <a href="{{ path('app_register') }}" style="color: var(--dark-color); font-weight: 700;">Inscrivez-vous</a></p>
+                    {# <p><a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a></p> #}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

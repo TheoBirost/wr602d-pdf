@@ -1,0 +1,120 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ tool.name }}{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        .tool-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background-color: #fff;
+            border: 3px solid #000;
+            border-radius: 0; /* Carré */
+            box-shadow: 8px 8px 0 #000; /* Ombre nette */
+            text-align: center;
+        }
+        .tool-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        .tool-title {
+            font-family: var(--font-headings);
+            font-size: 3rem;
+            font-weight: normal;
+            margin-bottom: 1rem;
+        }
+        .tool-description {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            color: #718096;
+            margin-bottom: 2rem;
+        }
+        .tool-content {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 3px solid #000; /* Bordure plus épaisse */
+            text-align: left;
+        }
+        /* Styles de formulaire génériques */
+        .tool-content form > div {
+            margin-bottom: 1.5rem;
+        }
+        .tool-content form label {
+            display: block;
+            font-family: var(--font-headings);
+            font-weight: normal;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #2d3748;
+        }
+        .tool-content form input[type="text"],
+        .tool-content form input[type="url"],
+        .tool-content form textarea,
+        .tool-content form input[type="file"] {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #000;
+            border-radius: 0; /* Carré */
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box;
+        }
+        .tool-content form textarea {
+            resize: vertical;
+            min-height: 250px;
+        }
+        .tool-content form button[type="submit"] {
+            display: inline-block;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--dark-color);
+            color: #FFFFFF;
+            font-family: var(--font-headings);
+            font-size: 1.2rem;
+            font-weight: normal;
+            border: 3px solid var(--dark-color);
+            border-radius: 0; /* Carré */
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 1rem;
+            box-shadow: 4px 4px 0 var(--dark-color); /* Ombre nette */
+        }
+        .tool-content form button[type="submit"]:hover {
+            background-color: #000000;
+            transform: translate(-2px, -2px);
+            box-shadow: 8px 8px 0 #000000;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="content-container">
+        <div class="tool-container">
+            <div class="tool-icon">
+                {{ tool.logo|raw }}
+            </div>
+            <h1 class="tool-title">{{ tool.name }}</h1>
+            <p class="tool-description">{{ tool.description }}</p>
+
+            <div class="tool-content">
+                {% if form is defined %}
+                    {#
+                    This defines an array of potential template names.
+                    The include() function will try each one in order until it finds one that exists.
+                    #}
+                    {% set templates_to_try = [
+                        'tool/' ~ tool.routeParam ~ '.html.twig',
+                        'tool/' ~ (tool.routeParam|replace({'-': '_'})) ~ '.html.twig'
+                    ] %}
+
+                    {{ include(templates_to_try, {form: form}, with_context=false, ignore_missing=true) }}
+                {% else %}
+                    <p>Le formulaire pour l'outil "<strong>{{ tool.name }}</strong>" est en cours de construction.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

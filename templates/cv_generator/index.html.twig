@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Générateur de CV{% endblock %}
+
+{% block body %}
+    <h1>Générateur de CV</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    {% if cv_content is defined %}
+        <h2>CV Généré</h2>
+        <pre>{{ cv_content }}</pre>
+    {% endif %}
+{% endblock %}

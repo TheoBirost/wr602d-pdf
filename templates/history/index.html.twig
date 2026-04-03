@@ -1,0 +1,235 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon Historique{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .history-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+    .history-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
+        text-align: center;
+        font-family: var(--font-headings);
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+    }
+    .stat-card {
+        background-color: #fff;
+        padding: 1.5rem;
+        border: 3px solid var(--dark-color);
+        box-shadow: 4px 4px 0 var(--dark-color);
+        text-align: center;
+        border-radius: 0;
+    }
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        font-family: var(--font-headings);
+    }
+    .stat-label {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #666;
+        margin-top: 0.5rem;
+        font-family: var(--font-body);
+    }
+    .filter-bar {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+    .filter-btn {
+        padding: 0.7rem 1.6rem;
+        border-radius: 0;
+        font-weight: normal;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        border: 3px solid var(--dark-color);
+        box-shadow: 4px 4px 0 var(--dark-color);
+        background-color: #fff;
+        color: var(--dark-color);
+        font-family: var(--font-headings);
+    }
+    .filter-btn:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 8px 8px 0 var(--dark-color);
+    }
+    .filter-btn.active {
+        background-color: var(--dark-color);
+        color: #fff;
+    }
+    .filter-select {
+        padding: 0.7rem 1.6rem;
+        border-radius: 0;
+        font-weight: normal;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        text-decoration: none;
+        border: 3px solid var(--dark-color);
+        background-color: #fff;
+        color: var(--dark-color);
+        font-family: var(--font-headings);
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%231A1A1A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 3rem;
+    }
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        background-color: #fff;
+        border: 3px solid var(--dark-color);
+        border-radius: 0;
+        overflow: hidden;
+    }
+    .history-table th, .history-table td {
+        padding: 1rem 1.5rem;
+        text-align: left;
+        border-bottom: 3px solid var(--dark-color);
+        vertical-align: middle;
+    }
+    .history-table thead {
+        background-color: #fff;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--dark-color);
+        font-family: var(--font-headings);
+    }
+    .history-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    .history-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+    .btn-download {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: var(--dark-color);
+        color: #fff;
+        text-decoration: none;
+        border-radius: 0;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background-color 0.2s;
+        border: 2px solid var(--dark-color);
+    }
+    .btn-download:hover {
+        background-color: #000;
+    }
+    .btn-favorite {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #cbd5e0;
+        transition: color 0.2s, transform 0.2s;
+    }
+    .btn-favorite.is-favorite {
+        color: #f56565; /* red */
+    }
+    .btn-favorite:hover {
+        transform: scale(1.2);
+    }
+    .no-history {
+        text-align: center;
+        padding: 4rem;
+        background-color: #fff;
+        border: 3px solid var(--dark-color);
+        border-radius: 0;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="history-container">
+    <h1 class="history-title">Mon Historique</h1>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.all_time }}</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.this_month }}</div>
+            <div class="stat-label">Ce mois-ci</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.last_30_days }}</div>
+            <div class="stat-label">30 derniers jours</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value">{{ stats.favorites }}</div>
+            <div class="stat-label">Favoris</div>
+        </div>
+    </div>
+
+    <div class="filter-bar">
+        <a href="{{ path('history_index') }}" class="filter-btn {% if not activeFilter %}active{% endif %}">Tous</a>
+        <a href="{{ path('history_index', {'filter': 'favorites'}) }}" class="filter-btn {% if activeFilter == 'favorites' %}active{% endif %}">Favoris</a>
+        <form id="filter-form" action="{{ path('history_index') }}" method="get" class="filter-select-form">
+            <select name="filter" class="filter-select" onchange="this.form.submit()">
+                <option value="">Parcourir par outil</option>
+                {% for category in categories %}
+                    <option value="{{ category }}" {% if activeFilter == category %}selected{% endif %}>{{ category }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if generations is not empty %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th style="width: 50px;"></th>
+                    <th>Outil utilisé</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for generation in generations %}
+                    <tr>
+                        <td>
+                            <form action="{{ path('history_toggle_favorite', {'id': generation.id}) }}" method="post">
+                                <input type="hidden" name="token" value="{{ csrf_token('toggle-favorite' ~ generation.id) }}">
+                                <button type="submit" class="btn-favorite {% if generation.isFavorite %}is-favorite{% endif %}" aria-label="Toggle Favorite" title="Toggle Favorite">
+                                    <i class="{% if generation.isFavorite %}fas fa-heart{% else %}far fa-heart{% endif %}"></i>
+                                </button>
+                            </form>
+                        </td>
+                        <td>{{ generation.toolName }}</td>
+                        <td>{{ generation.generatedAt|date('d/m/Y H:i') }}</td>
+                        <td>
+                            <a href="{{ asset(generation.filePath) }}" class="btn-download" download>
+                                Télécharger
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="no-history">
+            <p>Vous n'avez pas encore généré de fichier.</p>
+            <a href="{{ path('homepage') }}" class="btn btn-primary">Commencer à générer</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
