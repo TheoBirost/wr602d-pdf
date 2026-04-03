@@ -12,7 +12,7 @@ RUN apk add --no-cache \
     nodejs npm
 
 # Installer l'outil "php-extension-installer" pour une gestion robuste des extensions
-ADD https://github.com/mlocati/php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
+ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 RUN chmod +x /usr/local/bin/install-php-extensions
 
 # Installer toutes les extensions PHP nécessaires en une seule fois
