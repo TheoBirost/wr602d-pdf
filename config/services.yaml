@@ -7,6 +7,8 @@ parameters:
     stripe_secret_key: '%env(STRIPE_SECRET_KEY)%'
     stripe_publishable_key: '%env(STRIPE_PUBLISHABLE_KEY)%'
     stripe_webhook_secret: '%env(STRIPE_WEBHOOK_SECRET)%'
+    gotenberg_api_url: '%env(GOTENBERG_API_URL)%'
+    photos_directory: '%kernel.project_dir%/public/uploads/photos'
 
 services:
     # default configuration for services in *this* file
@@ -22,6 +24,7 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
+            - '../src/Service/GotenbergService.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -32,7 +35,7 @@ services:
 
     App\Service\YourGotenbergService:
         arguments:
-            $gotenbergBaseUrl: '%env(GOTENBERG_URL)%' # Use an environment variable for the base URL
+            $gotenbergBaseUrl: '%gotenberg_api_url%'
 
     App\Service\StripeService:
         arguments:
